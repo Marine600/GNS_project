@@ -1,84 +1,119 @@
-{
-    "AS_10":{
+{"AS":{
+    "10":{
+        "ip_range":"2000:100:1:xx::y/64",
         "protocol":"RIP",
         "routeurs":{
             "R11":{
                 "router_id":"11.11.11.11",
-                "iBGP":null,
+                "loopback_address":"2000:100:11::11/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R12","R16","R17"]}
             },
             "R12":{
                 "router_id":"12.12.12.12",
-                "iBGP":null,
+                "loopback_address":"2000:100:12::12/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R11","R13","R14","R15"]}
             },
             "R13":{
                 "router_id":"13.13.13.13",
-                "iBGP":"",
+                "loopback_address":"2000:100:13::13/64",
+                "eBGP":true,
+                "network":null,
+                "ip_border":"2000:100:3:xx:y/64",
                 "voisins":{["R12","R15","R21"]}
             },
             "R14":{
                 "router_id":"14.14.14.14",
-                "iBGP":"",
+                "loopback_address":"2000:100:14::14/64",
+                "eBGP":true,
+                "network":null,
+                "ip_border":"2000:100:4:xx:y/64",
                 "voisins":{["R12","R15","R27"]}
             },
             "R15":{
                 "router_id":"15.15.15.15",
-                "iBGP":null,
+                "loopback_address":"2000:100:15::15/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R12","R13","R14","R16"]}
             },
             "R16":{
                 "router_id":"16.16.16.16",
-                "iBGP":null,
+                "loopback_address":"2000:100:16::16/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R11","R15","R17"]}
             },
             "R17":{
                 "router_id":"17.17.17.17",
-                "iBGP":null,
+                "loopback_address":"2000:100:17::17/64",
+                "eBGP":false,
+                "network":"3000:100:1:1::/64",
                 "voisins":{["R11","R16"]}
             }
         }
     },
-    "AS_20":{
+    "20":{
+        "ip_range":"2000:100:2:xx::y/64",
         "protocol":"OSPF",
         "routeurs":{
             "R21":{
                 "router_id":"21.21.21.21",
-                "iBGP":"",
+                "loopback_address":"2000:100:21::21/64",
+                "eBGP":true,
+                "network":null,
+                "ip_border":"2000:100:3:xx::y/64",
                 "voisins":{["R13","R22","R26"]}
             },
             "R22":{
                 "router_id":"22.22.22.22",
-                "iBGP":null,
+                "loopback_address":"2000:100:22::22/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R21","R23","R26","R27"]}
             },
             "R23":{
                 "router_id":"23.23.23.23",
-                "iBGP":null,
+                "loopback_address":"2000:100:23::23/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R22","R24","R25"]}
             },
             "R24":{
                 "router_id":"24.24.24.24",
-                "iBGP":null,
+                "loopback_address":"2000:100:24::24/64",
+                "eBGP":false,
+                "network":"3000:100:3:3::/64",
                 "voisins":{["R23","R25"]}
             },
             "R25":{
                 "router_id":"25.25.25.25",
-                "iBGP":null,
+                "loopback_address":"2000:100:25::25/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R23","R24","R26"]}
             },
             "R26":{
                 "router_id":"16.16.16.16",
-                "iBGP":null,
+                "loopback_address":"2000:100:26::26/64",
+                "eBGP":false,
+                "network":null,
                 "voisins":{["R21","R22","R25","R27"]}
             },
             "R27":{
                 "router_id":"27.27.27.27",
-                "iBGP":"",
+                "loopback_address":"2000:100:27::27/64",
+                "eBGP":true,
+                "network":null,
+                "ip_border":"2000:100:4:xx::y/64",
                 "voisins":{["R14","R22","R26"]}
             }
         }
     }
+}
 }
 
 
