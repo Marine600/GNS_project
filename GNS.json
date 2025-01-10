@@ -1,8 +1,86 @@
 {
-    "ddd":"aaa",
-    "sss":5.31
-},
-{
-    "ddd":"aaa",
-    "sss":5.31
+    "AS_10":{
+        "protocol":"RIP",
+        "routeurs":{
+            "R11":{
+                "router_id":"11.11.11.11",
+                "iBGP":null,
+                "voisins":{["R12","R16","R17"]}
+            },
+            "R12":{
+                "router_id":"12.12.12.12",
+                "iBGP":null,
+                "voisins":{["R11","R13","R14","R15"]}
+            },
+            "R13":{
+                "router_id":"13.13.13.13",
+                "iBGP":"",
+                "voisins":{["R12","R15","R21"]}
+            },
+            "R14":{
+                "router_id":"14.14.14.14",
+                "iBGP":"",
+                "voisins":{["R12","R15","R27"]}
+            },
+            "R15":{
+                "router_id":"15.15.15.15",
+                "iBGP":null,
+                "voisins":{["R12","R13","R14","R16"]}
+            },
+            "R16":{
+                "router_id":"16.16.16.16",
+                "iBGP":null,
+                "voisins":{["R11","R15","R17"]}
+            },
+            "R17":{
+                "router_id":"17.17.17.17",
+                "iBGP":null,
+                "voisins":{["R11","R16"]}
+            }
+        }
+    },
+    "AS_20":{
+        "protocol":"OSPF",
+        "routeurs":{
+            "R21":{
+                "router_id":"21.21.21.21",
+                "iBGP":null,
+                "voisins":{["R12","R16","R17"]}
+            },
+            "R22":{
+                "router_id":"22.22.22.22",
+                "iBGP":null,
+                "voisins":{["R11","R13","R14","R15"]}
+            },
+            "R23":{
+                "router_id":"23.23.23.23",
+                "iBGP":"",
+                "voisins":{["R12","R15","R21"]}
+            },
+            "R24":{
+                "router_id":"24.24.24.24",
+                "iBGP":"",
+                "voisins":{["R12","R15","R27"]}
+            },
+            "R25":{
+                "router_id":"25.25.25.25",
+                "iBGP":null,
+                "voisins":{["R12","R13","R14","R16"]}
+            },
+            "R26":{
+                "router_id":"16.16.16.16",
+                "iBGP":null,
+                "voisins":{["R11","R15","R17"]}
+            },
+            "R27":{
+                "router_id":"17.17.17.17",
+                "iBGP":null,
+                "voisins":{["R11","R16"]}
+            }
+        }
+    }
 }
+
+
+
+            
