@@ -44,38 +44,38 @@
         "routeurs":{
             "R21":{
                 "router_id":"21.21.21.21",
-                "iBGP":null,
-                "voisins":{["R12","R16","R17"]}
+                "iBGP":"",
+                "voisins":{["R13","R22","R26"]}
             },
             "R22":{
                 "router_id":"22.22.22.22",
                 "iBGP":null,
-                "voisins":{["R11","R13","R14","R15"]}
+                "voisins":{["R21","R23","R26","R27"]}
             },
             "R23":{
                 "router_id":"23.23.23.23",
-                "iBGP":"",
-                "voisins":{["R12","R15","R21"]}
+                "iBGP":null,
+                "voisins":{["R22","R24","R25"]}
             },
             "R24":{
                 "router_id":"24.24.24.24",
-                "iBGP":"",
-                "voisins":{["R12","R15","R27"]}
+                "iBGP":null,
+                "voisins":{["R23","R25"]}
             },
             "R25":{
                 "router_id":"25.25.25.25",
                 "iBGP":null,
-                "voisins":{["R12","R13","R14","R16"]}
+                "voisins":{["R23","R24","R26"]}
             },
             "R26":{
                 "router_id":"16.16.16.16",
                 "iBGP":null,
-                "voisins":{["R11","R15","R17"]}
+                "voisins":{["R21","R22","R25","R27"]}
             },
             "R27":{
-                "router_id":"17.17.17.17",
-                "iBGP":null,
-                "voisins":{["R11","R16"]}
+                "router_id":"27.27.27.27",
+                "iBGP":"",
+                "voisins":{["R14","R22","R26"]}
             }
         }
     }
