@@ -6,8 +6,8 @@ with open ("GNS.json", 'r') as json_file:
 
 # Parcourir chaque AS dans le fichier JSON
 for as_name, as_data in data.items():
-    protocol = as_data.get("protocol", "unknown")  # Protocole utilisé par l'AS
-    routeurs = as_data.get("routeurs", {})
+    protocol = as_data.get("protocol", "unknown")  # Récupérer le protocole utilisé par l'AS
+    routeurs = as_data.get("routeurs", {}) #Récupérer les routeurs présents dans chaque AS
 
     # Parcourir chaque routeur dans l'AS
     for router_name, router_data in routeurs.items():
