@@ -1,5 +1,7 @@
 
-#ATTENTION : ne pas oublier de modifier attribut voisins en liste de listes pour que ça marche et router_id en un entier (11 au lieu de "11.11.11.11")
+#ATTENTION : ne pas oublier de modifier attribut voisins en liste de listes pour que ça marche 
+# on aura un truc pour R11 qui ressemble à "voisins": [["R12","2000:100:1:1::/64"],["R16","2000:100:1:2::/64"],["R17","2000:100:1:3::/64"]]
+#changer router_id en un entier (11 au lieu de "11.11.11.11")
 
 def conf_address(routeur, router_id):
     # Configure les addresses IP de chaque interface d'un routeur
@@ -15,15 +17,15 @@ def conf_address(routeur, router_id):
 
     addresses["loopback 0"] = routeur["loopback_address"] # On configure l'addresse loopback
     
-    addresses["FastEthernet0/0"] = voisins[0][1] + f"{router_id}/64"
+    addresses["FastEthernet0/0"] = voisins[0][1][0:14] + f"{router_id}/64"
     if len(voisins) >= 2 :
-        addresses["GigabitEthernet1/0"] = voisins[1][1] + f"{router_id}/64"
+        addresses["GigabitEthernet1/0"] = voisins[1][1][0:14] + f"{router_id}/64"
 
         if len(voisins) >= 3 :
-            addresses["GigabitEthernet2/0"] = voisins[2][1] + f"{router_id}/64"
+            addresses["GigabitEthernet2/0"] = voisins[2][1][0:14] + f"{router_id}/64"
 
             if len(voisins) == 4 :
-                addresses["GigabitEthernet3/0"] = voisins[3][1] + f"{routeur_id}/64"
+                addresses["GigabitEthernet3/0"] = voisins[3][1][0:14] + f"{routeur_id}/64"
 
     return addresses
 
