@@ -12,7 +12,7 @@ for as_name, as_data in data.items():
     # Parcourir chaque routeur dans l'AS
     for router_name, router_data in routeurs.items():
         # Nom du fichier basé sur le nom du routeur
-        filename = f"config_{router_name}.cfg"
+        filename = f"{router_name}_startup-config.cfg"
 
 
         # Lire le fichier existant et remplacer certaines informations
