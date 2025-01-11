@@ -36,3 +36,4 @@ for as_name, as_data in data.items():
             file.writelines(updated_lines)
 
         print("Modifications terminées.")
+ # type: ignore
