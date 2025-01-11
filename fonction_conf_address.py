@@ -25,7 +25,7 @@ def conf_address(routeur, router_id):
             addresses["GigabitEthernet2/0"] = voisins[2][1][0:14] + f"{router_id}/64"
 
             if len(voisins) == 4 :
-                addresses["GigabitEthernet3/0"] = voisins[3][1][0:14] + f"{routeur_id}/64"
+                addresses["GigabitEthernet3/0"] = voisins[3][1][0:14] + f"{router_id}/64"
 
     return addresses
 
