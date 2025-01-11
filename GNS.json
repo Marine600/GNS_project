@@ -24,7 +24,7 @@
                 "loopback_address":"2000:100:13::13/64",
                 "eBGP":true,
                 "network":null,
-                "ip_border":"2000:100:3:xx:y/64",
+                "ip_border":"2000:100:3:1:13/64",
                 "voisins":["R12","R15","R21"]
             },
             "R14":{
@@ -32,7 +32,7 @@
                 "loopback_address":"2000:100:14::14/64",
                 "eBGP":true,
                 "network":null,
-                "ip_border":"2000:100:4:xx:y/64",
+                "ip_border":"2000:100:3:2:14/64",
                 "voisins":["R12","R15","R27"]
             },
             "R15":{
@@ -70,7 +70,7 @@
                 "loopback_address":"2000:100:21::21/64",
                 "eBGP":true,
                 "network":null,
-                "ip_border":"2000:100:3:xx::y/64",
+                "ip_border":"2000:100:3:1::21/64",
                 "voisins":["R13","R22","R26"]
             },
             "R22":{
@@ -118,7 +118,7 @@
                 "loopback_address":"2000:100:27::27/64",
                 "eBGP":true,
                 "network":null,
-                "ip_border":"2000:100:4:xx::y/64",
+                "ip_border":"2000:100:3:2::27/64",
                 "voisins":["R14","R22","R26"]
             }
         }
