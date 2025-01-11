@@ -1,4 +1,5 @@
 
+#ATTENTION : ne pas oublier de modifier attribut voisins en liste de listes pour que ça marche et router_id en un entier (11 au lieu de "11.11.11.11")
 
 def conf_address(routeur, router_id):
     # Configure les addresses IP de chaque interface d'un routeur
