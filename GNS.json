@@ -1,6 +1,6 @@
 {"AS":{
     "10":{
-        "ip_range":"2000:100:1:",
+        "ip_range":"2000:100:1:x::y/64",
         "protocol":"RIP",
         "Routeurs":{
             "R11":{
@@ -62,7 +62,7 @@
         }
     },
     "20":{
-        "ip_range":"2000:100:2:/64",
+        "ip_range":"2000:100:2:x::y/64",
         "protocol":"OSPF",
         "Routeurs":{
             "R21":{
