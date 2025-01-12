@@ -27,6 +27,11 @@ def conf_address(routeur, router_id):
             if len(voisins) == 4 :
                 addresses["GigabitEthernet3/0"] = voisins[3][1][0:14] + f"{router_id}/64"
 
+    # Ajouter l'addresse du network à advertise sur une des interfaces
+    if routeur["network"] != null :
+        addresses["GigabitEthernet3/0"] = routeur["network"][0:14] + "1/64"
+
+
     return addresses
 
     
