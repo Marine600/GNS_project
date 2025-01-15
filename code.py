@@ -56,15 +56,15 @@ def modig_config(lines, router_data, router_name, as_name, protocol):
             elif line.startswith("no bgp default ipv4-unicast"):  # Modifier le router-id
                 updated_lines.append("no bgp default ipv4-unicast\n")
                 if ibgp:  #Modif Yassmine
-                    for voisin in router_data.get(voisins):
-                        nom_voisin = router_name.get([voisin][0])
+                    for voisin in router_data.get("voisins"):
+                        nom_voisin = router_name.get("voisin"[0])
                         number_voisin = nom_voisin[1] + nom_voisin[2]
                         add_loop_voisin = "2000:100:"+number_voisin+"::"+number_voisin
                         updated_lines.append("neighbor {add_loop_voisin} remote-as {as_name}\n")
                         updated_lines.append("neighbor {add_loop_voisin} update-source Loopback{number}\n")
                 else:
-                    for voisin in router_data.get(voisins):
-                        nom_voisin = router_name.get([voisin][0])
+                    for voisin in router_data.get("voisins"):
+                        nom_voisin = router_name.get("voisin"[0])
                         number_voisin = nom_voisin[1] + nom_voisin[2]
                         add_loop_voisin = "2000:100:"+number_voisin+"::"+number_voisin
                         updated_lines.append("neighbor {add_loop_voisin} remote-as {as_name}\n") #Modifier as_name
