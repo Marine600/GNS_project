@@ -26,7 +26,7 @@ def modig_config(lines, router_data, router_name, as_name, protocol):
                     if ebgp:
                         updated_lines.append("duplex full\n")
                     else:
-                        #
+                        updated_lines.append("negotiation auto\n")
                     if rip:
                         updated_lines.append("ipv6 rip ng enable\n")
                     if ospf:
