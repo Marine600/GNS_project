@@ -17,6 +17,22 @@ def modig_config(line):
                 updated_lines.append("interface Loopback{router_name}\n")
             elif line.startswith("ipv6 address"):  # Modifier l'interface Loopback'
                 updated_lines.append("ipv6 address {fonction_conf_address.conf_address(router_name)}\n")
+            elif line.startswith("FastEthernet0/0"):  # Modifier le router bgp
+                #Elimine les 4 lignes suivantes
+                
+                if #il y a pas cette interface:
+                    updated_lines.append(" no ip address\n shutdown\n negotiation auto\n")
+                else:
+                    #ajouter l'addresse ipv6
+                if ebgp:
+                    #.....
+                else:
+                    #
+                if rip:
+                    updated_lines.append("ipv6 rip ng enable\n")
+                if ospf:
+                    updated_lines.append("ipv6 ospf 1 area 0\n")
+                
             elif line.startswith("router bgp"):  # Modifier le router bgp
                 updated_lines.append("router bgp {as_name}\n")
             elif line.startswith("bgp router-id"):  # Modifier le router bgp
@@ -25,7 +41,7 @@ def modig_config(line):
                 updated_lines.append(line)  # Conserver les lignes inchangées
 
         # Écrire les modifications dans le fichier
-        with open('config.cfg', 'w') as file:
+        with open('model_RIP_startup-config.cfg', 'w') as file:
             file.writelines(updated_lines)
 
     
