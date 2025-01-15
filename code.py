@@ -1,16 +1,26 @@
 import json
+import fonction_conf_address
 
 def modig_config(line):
 
         # Liste pour stocker les lignes modifiées
         updated_lines = []
 
+        # Récupérer le router-id à partir des données JSON
+        router_id = router_data.get("router_id")
+
         # Parcourir chaque ligne et appliquer les modifications
         for line in lines:
             if line.startswith("hostname"):  # Modifier le hostname
                 updated_lines.append("hostname {router_name}\n")
-            elif line.startswith("protocol"):  # Modifier le protocole
-                updated_lines.append("protocol {protocol}\n")
+            elif line.startswith("interface Loopback"):  # Modifier l'interface Loopback'
+                updated_lines.append("interface Loopback{router_name}\n")
+            elif line.startswith("ipv6 address"):  # Modifier l'interface Loopback'
+                updated_lines.append("ipv6 address {fonction_conf_address.conf_address(router_name)}\n")
+            elif line.startswith("router bgp"):  # Modifier le router bgp
+                updated_lines.append("router bgp {as_name}\n")
+            elif line.startswith("bgp router-id"):  # Modifier le router bgp
+                updated_lines.append("bgp router-id {router_id}\n")
             else:
                 updated_lines.append(line)  # Conserver les lignes inchangées
 
