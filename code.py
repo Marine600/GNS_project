@@ -1,13 +1,14 @@
 import json
 import fonction_conf_address
 
-def modig_config(line):
-
+def modig_config(lines, router_data, router_name, as_name, protocol):
+        
         # Liste pour stocker les lignes modifiées
         updated_lines = []
 
-        # Récupérer le router-id à partir des données JSON
+        # Récupérer router-id et ebgp à partir des données JSON
         router_id = router_data.get("router_id")
+        ebgp = router_data.get("eBGP", False)
 
         # Parcourir chaque ligne et appliquer les modifications
         for line in lines:
@@ -18,20 +19,18 @@ def modig_config(line):
             elif line.startswith("ipv6 address"):  # Modifier l'interface Loopback'
                 updated_lines.append("ipv6 address {fonction_conf_address.conf_address(router_name)}\n")
             elif line.startswith("FastEthernet0/0"):  # Modifier le router bgp
-                #Elimine les 4 lignes suivantes
-                
                 if #il y a pas cette interface:
-                    updated_lines.append(" no ip address\n shutdown\n negotiation auto\n")
+                    updated_lines.append("no ip address\n shutdown\n negotiation auto\n")
                 else:
-                    #ajouter l'addresse ipv6
-                if ebgp:
-                    #.....
-                else:
-                    #
-                if rip:
-                    updated_lines.append("ipv6 rip ng enable\n")
-                if ospf:
-                    updated_lines.append("ipv6 ospf 1 area 0\n")
+                    updated_lines.append("no ip address\n")
+                    if ebgp:
+                        updated_lines.append("duplex full\n")
+                    else:
+                        #
+                    if rip:
+                        updated_lines.append("ipv6 rip ng enable\n")
+                    if ospf:
+                        updated_lines.append("ipv6 ospf 1 area 0\n")
                 
             elif line.startswith("router bgp"):  # Modifier le router bgp
                 updated_lines.append("router bgp {as_name}\n")
