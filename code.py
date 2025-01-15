@@ -1,5 +1,10 @@
 import json
 
+def modif_config(lines):
+
+
+
+
 # Charger le fichier JSON
 with open ("GNS.json", 'r') as json_file:
     data = json.load(json_file)
@@ -35,5 +40,9 @@ for as_name, as_data in data.items():
         with open('config.cfg', 'w') as file:
             file.writelines(updated_lines)
 
-        print("Modifications terminées.")
+        print(f"Modifications du fichier de configuration du routeur {router_name} terminées.")
+ 
+ 
+ 
+ 
  # type: ignore
