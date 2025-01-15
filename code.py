@@ -1,6 +1,6 @@
 import json
 
-def modig_config(line):
+def modif_config(line):
 
         # Liste pour stocker les lignes modifiées
         updated_lines = []
@@ -8,9 +8,11 @@ def modig_config(line):
         # Parcourir chaque ligne et appliquer les modifications
         for line in lines:
             if line.startswith("hostname"):  # Modifier le hostname
-                updated_lines.append("hostname {router_name}\n")
+                updated_lines.append("{router_name}\n")
+            """""
             elif line.startswith("protocol"):  # Modifier le protocole
                 updated_lines.append("protocol {protocol}\n")
+            """
             else:
                 updated_lines.append(line)  # Conserver les lignes inchangées
 
@@ -39,7 +41,7 @@ for as_name, as_data in data.items():
         with open('config.cfg', 'r') as file:
             lines = file.readlines()  # Lire toutes les lignes du fichier
 
-        modig_config(lines)
+        modif_config(lines)
 
         print("Modifications du fichier de configuration de {routeur_name} terminées.")
  
