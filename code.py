@@ -64,7 +64,7 @@ for as_name, as_data in data.items():
         with open('config.cfg', 'r') as file:
             lines = file.readlines()  # Lire toutes les lignes du fichier
 
-        modig_config(lines)
+        modif_config(lines)
 
         print("Modifications du fichier de configuration de {routeur_name} terminées.")
  
