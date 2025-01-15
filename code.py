@@ -3,6 +3,12 @@ import fonction_conf_address
 
 def modig_config(lines, router_data, router_name, as_name, protocol):
         
+        address_routeur = fonction_conf_address.conf_address(router_name)
+
+        # Charger le fichier JSON
+        with open ("model_RIP_startup-config.cfg", 'r') as json_file:
+            data = json.load(json_file)
+
         # Liste pour stocker les lignes modifiées
         updated_lines = []
 
@@ -17,23 +23,27 @@ def modig_config(lines, router_data, router_name, as_name, protocol):
             elif line.startswith("interface Loopback"):  # Modifier l'interface Loopback'
                 updated_lines.append("interface Loopback{router_name}\n")
             elif line.startswith("ipv6 address"):  # Modifier l'interface Loopback'
-                updated_lines.append("ipv6 address {fonction_conf_address.conf_address(router_name)}\n")
-            elif line.startswith("FastEthernet0/0"):  # Modifier le router bgp
-                if #il y a pas cette interface:
+                updated_lines.append("{fonction_conf_address.conf_address(router_name)}\n")#A modifier 
+            elif line.startswith("FastEthernet0/0"):  # A modifier, on a toujours cette interface
+                if "FastEthernet0/0" not in address_routeur.key():
                     updated_lines.append("no ip address\n shutdown\n negotiation auto\n")
                 else:
                     updated_lines.append("no ip address\n")
                     if ebgp:
                         updated_lines.append("duplex full\n")
+                        if rip:
+                        updated_lines.append("ipv6 rip ng enable\n")#Cas particulier à modifier
+                        if ospf:
+                            updated_lines.append("ipv6 ospf 1 area 0\n")#Cas particulier à modifier
                     else:
                         updated_lines.append("negotiation auto\n")
-                    if rip:
+                        if rip:
                         updated_lines.append("ipv6 rip ng enable\n")
-                    if ospf:
-                        updated_lines.append("ipv6 ospf 1 area 0\n")
+                        if ospf:
+                            updated_lines.append("ipv6 ospf 1 area 0\n")
                 
             elif line.startswith("router bgp"):  # Modifier le router bgp
-                updated_lines.append("router bgp {as_name}\n")
+                updated_lines.append("router bgp{as_name}\n")
             elif line.startswith("bgp router-id"):  # Modifier le router bgp
                 updated_lines.append("bgp router-id {router_id}\n")
             else:
@@ -43,11 +53,6 @@ def modig_config(lines, router_data, router_name, as_name, protocol):
         with open('model_RIP_startup-config.cfg', 'w') as file:
             file.writelines(updated_lines)
 
-    
-
-# Charger le fichier JSON
-with open ("GNS.json", 'r') as json_file:
-    data = json.load(json_file)
 
 # Parcourir chaque AS dans le fichier JSON
 for as_name, as_data in data.items():
