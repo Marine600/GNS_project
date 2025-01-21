@@ -1,35 +1,84 @@
+# ATTENTION : ces fonctions ont été écrites pour une version optimisée du Json qui permet d'automatiser l'addressage ipv6 
+# en partant seulement du préfixe de l'AS (exemple plus bas)
 
-#ATTENTION : ne pas oublier de modifier attribut voisins en liste de listes pour que ça marche 
-# on aura un truc pour R11 qui ressemble à "voisins": [["R12","2000:100:1:1::/64"],["R16","2000:100:1:2::/64"],["R17","2000:100:1:3::/64"]]
+def addressage(AS):
+    '''
+    Prend en paramètre un AS et attribut à chaque routeur des addresses ipv6 adaptées
 
-def conf_address(routeur):
-    # Configure les addresses IP de chaque interface d'un routeur
-    # Paramètres : Dictionnaire routeur
-    # Retourne : Dictionnaire addresses avec comme clés les interfaces et comme valeurs les addresses IP
-    #         
+    Parameters
+    ----------
+    AS : Dictionnaire 
+        Contient les propriétés de l'AS dont une clé Liens qui est une liste de listes des liens entre les routeurs
 
-    addresses = {}
-    voisins = []
-    R_id = routeur["router_id"] # Récupérer l'id du routeur
-    voisins = routeur["voisins"] # Récupérer les voisins du routeur, voisins est une liste de liste contenant les voisins et l'addresse du sous-réseau associé à la connexion
+    Returns
+    -------
+    dic : Dictionnaire
+        Dictionnaire des addresses ipv6 configurées pour chaque routeur
 
-    addresses["loopback 0"] = routeur["loopback_address"] # On configure l'addresse loopback
+    '''
+    dic = {}
     
-    addresses["FastEthernet0/0"] = voisins[0][1][0:14] + f"{R_id[0:2]}/64"
-    if len(voisins) >= 2 :
-        addresses["GigabitEthernet1/0"] = voisins[1][1][0:14] + f"{R_id[0:2]}/64"
+    for i in range(len(AS["Liens"])):
+        
+        if AS["Liens"][i][0] not in dic.keys():
+            dic[AS["Liens"][i][0]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"]    
+        else:
+            dic[AS["Liens"][i][0]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64")
+            
+        if AS["Liens"][i][1] not in dic.keys():
+            dic[AS["Liens"][i][1]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"]     
+        else:
+            dic[AS["Liens"][i][1]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64")
+            
+    return dic
 
-        if len(voisins) >= 3 :
-            addresses["GigabitEthernet2/0"] = voisins[2][1][0:14] + f"{R_id[0:2]}/64"
+def interface(routeurs):
+    '''
+    
 
-            if len(voisins) == 4 :
-                addresses["GigabitEthernet3/0"] = voisins[3][1][0:14] + f"{R_id[0:2]}/64"
+    Parameters
+    ----------
+    routeurs : Dictionnaire renvoyé par la fonction addressage
 
-    # Ajouter l'addresse du network à advertise sur une des interfaces
-    if routeur["network"] != null :
-        addresses["GigabitEthernet3/0"] = routeur["network"][0:14] + "1/64"
+    Returns
+    -------
+    interfaces : Dictionnaire avec comme clés les routeurs et comme valeurs un dictionnaire des noms des interfaces configurées et de leurs addresses ip respectives
 
+    '''
+    interfaces = {}
+    
+    for router in routeurs.keys():
+        addresses = routeurs[router]
+        router_interface = {}
+        
+        router_interface["loopback 0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/64"
+        router_interface["FastEthernet0/0"] = addresses[0]
+        
+        if len(addresses) >= 2 :
+            router_interface["GigabitEthernet1/0"] = addresses[1]
+            
+            if len(addresses) >= 3 :
+                router_interface["GigabitEthernet2/0"] = addresses[2]
+                
+                if len(addresses) == 4 :
+                    router_interface["GigabitEthernet2/0"] = addresses[3]
+                    
+        interfaces[router] = router_interface
 
-    return addresses
+    return interfaces
+
+# POUR TESTER
+# dicoAS = {"AS" :
+#               {10 :
+#                    {"Protocole" : "RIP",
+#                    "Liens" : [["R11","R12"],["R11","R16"],["R11","R17"],["R12","R13"],["R12","R15"],["R12","R14"],["R13","R15"],["R14","R15"],["R15","R16"],["R16","R17"]],
+#                    "Ip_range" : "2000:100:1::/54"}
+#                    }}
+    
+# AS = dicoAS["AS"][10]
+
+# plan_addressage = addressage(AS)
+
+# print(interface(plan_addressage))
 
     
