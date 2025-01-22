@@ -61,25 +61,26 @@ def interface(routeurs):
                 router_interface["GigabitEthernet2/0"] = addresses[2]
                 
                 if len(addresses) == 4 :
-                    router_interface["GigabitEthernet2/0"] = addresses[3]
+                    router_interface["GigabitEthernet3/0"] = addresses[3]
                     
         interfaces[router] = router_interface
 
     return interfaces
 
 # POUR TESTER
-# dicoAS = {"AS" :
-#               {10 :
-#                    {"Protocole" : "RIP",
-#                     "Routeurs" : ["R11", "R12", "R13", "R14", "R15", "R16", "R17"],
-#                    "Liens" : [["R11","R12"],["R11","R16"],["R11","R17"],["R12","R13"],["R12","R15"],["R12","R14"],["R13","R15"],["R14","R15"],["R15","R16"],["R16","R17"]],
-#                    "Ip_range" : "2000:100:1::/54"}
-#                    }}
+dicoAS = {"AS" :
+               {10 :
+                    {"Protocole" : "RIP",
+                     "Routeurs" : ["R11", "R12", "R13", "R14", "R15", "R16", "R17"],
+                    "Liens" : [["R11","R12"],["R11","R16"],["R11","R17"],["R12","R13"],["R12","R15"],["R12","R14"],["R13","R15"],["R14","R15"],["R15","R16"],["R16","R17"]],
+                    "Ip_range" : "2000:100:1::/54"}
+                    }}
     
-# AS = dicoAS["AS"][10]
+AS = dicoAS["AS"][10]
 
-# plan_addressage = addressage(AS)
+plan_addressage = addressage(AS)
 
-# print(interface(plan_addressage))
+print(interface(plan_addressage))
+
 
     
