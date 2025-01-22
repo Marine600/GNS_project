@@ -68,19 +68,23 @@ def interface(routeurs):
     return interfaces
 
 # POUR TESTER
-dicoAS = {"AS" :
-               {10 :
-                    {"Protocole" : "RIP",
-                     "Routeurs" : ["R11", "R12", "R13", "R14", "R15", "R16", "R17"],
-                    "Liens" : [["R11","R12"],["R11","R16"],["R11","R17"],["R12","R13"],["R12","R15"],["R12","R14"],["R13","R15"],["R14","R15"],["R15","R16"],["R16","R17"]],
-                    "Ip_range" : "2000:100:1::/54"}
-                    }}
+#dicoAS = {"AS" :
+#               {10 :
+ #                   {"Protocole" : "RIP",
+  #                   "Routeurs" : ["R11", "R12", "R13", "R14", "R15", "R16", "R17"],
+   #                 "Liens" : [["R11","R12"],["R11","R16"],["R11","R17"],["R12","R13"],["R12","R15"],["R12","R14"],["R13","R15"],["R14","R15"],["R15","R16"],["R16","R17"]],
+    #                "Ip_range" : "2000:100:1::/54"}
+     #               }}
+     # pour les liens des routeurs de bordure ajouter un attribut au même niveau que l'attribut "AS" qui s'appellerait "Border" avec les routeurs de bordure et les liens
+     # "Border" : {
+     #              "Routers" : ["R13", "R14", "R27", "R21"],
+     #              "Liens_border" : [["R13", "R21"], ["R14", "R2"]]}
     
-AS = dicoAS["AS"][10]
+#AS = dicoAS["AS"][10]
 
-plan_addressage = addressage(AS)
+#plan_addressage = addressage(AS)
 
-print(interface(plan_addressage))
+#print(interface(plan_addressage))
 
 
     
