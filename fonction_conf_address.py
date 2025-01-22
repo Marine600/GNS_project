@@ -78,7 +78,7 @@ def interface(routeurs):
      # pour les liens des routeurs de bordure ajouter un attribut au même niveau que l'attribut "AS" qui s'appellerait "Border" avec les routeurs de bordure et les liens
      # "Border" : {
      #              "Routers" : ["R13", "R14", "R27", "R21"],
-     #              "Liens_border" : [["R13", "R21"], ["R14", "R2"]]}
+     #              "Liens_border" : [["R13", "R21"], ["R14", "R27"]]}
     
 #AS = dicoAS["AS"][10]
 
