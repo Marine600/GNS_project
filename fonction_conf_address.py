@@ -35,7 +35,6 @@ def addressage(AS):
 def interface(AS):
     '''
     
-
     Parameters
     ----------
     routeurs : Dictionnaire renvoyé par la fonction addressage
@@ -52,7 +51,7 @@ def interface(AS):
         addresses = routeurs[router]
         router_interface = {}
         
-        router_interface["loopback 0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/64"
+        router_interface["Loopback0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/64"
         router_interface["FastEthernet0/0"] = addresses[0]
         
         if len(addresses) >= 2 :
