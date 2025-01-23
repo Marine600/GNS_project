@@ -17,24 +17,28 @@ def addressage(AS):
 
     '''
     dic = {}
+    subnet = []
     
     for i in range(len(AS["Liens"])):
         
         if AS["Liens"][i][0] not in dic.keys():
-            dic[AS["Liens"][i][0]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"]    
+            dic[AS["Liens"][i][0]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"]
         else:
             dic[AS["Liens"][i][0]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64")
             
         if AS["Liens"][i][1] not in dic.keys():
-            dic[AS["Liens"][i][1]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"]     
+            dic[AS["Liens"][i][1]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"]
         else:
             dic[AS["Liens"][i][1]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64")
-            
-    return dic
+        
+        subnet.append(AS["Ip_range"][0:11] + f"{i+1}::" + "/64")
+        
+    return dic, subnet
 
 def interface(AS):
     '''
     
+
     Parameters
     ----------
     routeurs : Dictionnaire renvoyé par la fonction addressage
@@ -44,14 +48,14 @@ def interface(AS):
     interfaces : Dictionnaire avec comme clés les routeurs et comme valeurs un dictionnaire des noms des interfaces configurées et de leurs addresses ip respectives
 
     '''
-    routeurs = addressage(AS)
+    routeurs, subnets = addressage(AS)
     interfaces = {}
     
     for router in routeurs.keys():
         addresses = routeurs[router]
         router_interface = {}
         
-        router_interface["Loopback0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/64"
+        router_interface["loopback 0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/128"
         router_interface["FastEthernet0/0"] = addresses[0]
         
         if len(addresses) >= 2 :
@@ -65,7 +69,7 @@ def interface(AS):
                     
         interfaces[router] = router_interface
 
-    return interfaces
+    return interfaces, subnets
 
 # POUR TESTER
 #dicoAS = {"AS" :
