@@ -160,14 +160,14 @@ def modif_config(filename, lines, dico, dicoAS, routeur):
                     if lien[1]==routeur:
                         voisin_ebgp = lien[0]
                 ad_voisin_ebgp = dico_border[voisin_ebgp]["GigabitEthernet3/0"]
-                updated_lines.append(f" neighbor {ad_voisin_ebgp} remote-as {autre_as}\n") # Voisin d'une autre AS
+                updated_lines.append(f" neighbor {ad_voisin_ebgp[0:-3]} remote-as {autre_as}\n") # Voisin d'une autre AS
 
 
         elif line.startswith(" address-family ipv6"): #  Les routeurs de bordure advertise tous les sous-réseaux internes à l'AS.
             updated_lines.append(" address-family ipv6\n")
             if ebgp:
                 for subnet in liste_subnet:
-                    updated_lines.append(f"network {subnet}\n")
+                    updated_lines.append(f"  network {subnet}\n")
             
             for voisin_bgp in dico["AS"][as_name]["Routeurs"]: # On active tous les voisins
                 if voisin_bgp != routeur: # Attention un routeur n'est pas voisin de lui même
