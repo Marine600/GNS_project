@@ -94,37 +94,31 @@ def modif_config(lines, router_data, router_name, as_name, protocol):
             updated_lines.append(line)  # Conserver les lignes inchangées
 
     # Écrire les modifications dans le fichier
-    with open('model_RIP_startup-config.cfg', 'w') as file:
+    with open("model_RIP_startup-config.cfg", 'w') as file:
         file.writelines(updated_lines)
 
 
 if __name__=="__main__":
     # Charger le fichier JSON
-    with open ("model_RIP_startup-config.cfg", 'r') as json_file:
-        data = json.load(json_file)
+    with open ("GNS.json", 'r') as json_file:
+        dicoAS = json.load(json_file)
 
     # Parcourir chaque AS dans le fichier JSON
-    for as_name, as_data in data.items():
-        protocol = as_data.get("protocol", "unknown")  # Récupérer le protocole utilisé par l'AS
-        routeurs = as_data.get("routeurs", {}) #Récupérer les routeurs présents dans chaque AS
+    for as_name in dicoAS["AS"].values():
+        # Lire le fichier modèle rip ou ospf en fonction de l'AS dans lequel se trouve le routeur
+        if as_name["Protocol"] == "RIP":
+            with open("model_RIP_startup-config.cfg", 'r') as file:
+                lines = file.readlines()  # Lire toutes les lignes du fichier
+        else:
+            with open("model_OSPF_startup-config.cfg", 'r') as file:
+                lines = file.readlines()
 
-        # Parcourir chaque routeur dans l'AS
-        for router_name, router_data in routeurs.items():
-            # Nom du fichier basé sur le nom du routeur
-            filename = f"i{router_name[1]+router_name[2]}_startup-config.cfg"
+        # Parcourir chaque routeur de l'AS
+        for routeur in as_name["routeurs"]:
+            # Nom du fichier de configuration créé basé sur le nom du routeur
+            filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
 
-            # Lire le fichier existant et remplacer certaines informations
-            if as_name == "10":
-                protocol="rip"
-                with open('model_rip_config.cfg', 'r') as file:
-                    lines = file.readlines()  # Lire toutes les lignes du fichier
-            else:
-                protocol="ospf"
-                with open('model_ospf_config.cfg', 'r') as file:
-                    lines = file.readlines()  # Lire toutes les lignes du fichier
-
-            modif_config(lines,router_data,router_name,as_name,protocol)
-
+            modif_config(lines,routeur) #Modifie le fichier modèle d'un routeur
             print("Modifications du fichier de configuration de {routeur_name} terminées.")
     
  # type: ignore

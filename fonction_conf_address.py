@@ -32,7 +32,7 @@ def addressage(AS):
             
     return dic
 
-def interface(routeurs):
+def interface(AS):
     '''
     
 
@@ -45,6 +45,7 @@ def interface(routeurs):
     interfaces : Dictionnaire avec comme clés les routeurs et comme valeurs un dictionnaire des noms des interfaces configurées et de leurs addresses ip respectives
 
     '''
+    routeurs = addressage(AS)
     interfaces = {}
     
     for router in routeurs.keys():
