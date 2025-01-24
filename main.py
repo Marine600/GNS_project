@@ -1,7 +1,10 @@
 import json
 import fonction_conf_address
 
-def modif_config(filename, lines, dico, dicoAS, routeur):
+def modif_config(lines, dico, dicoAS, routeur):
+
+    # Nom du fichier de configuration créé basé sur le nom du routeur
+    filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
 
     # id du routeur
     number = routeur[1] + routeur[2] #Prendre uniquement le numero du routeur
@@ -44,69 +47,38 @@ def modif_config(filename, lines, dico, dicoAS, routeur):
         elif line.startswith("interface FastEthernet0/0"): # Tous les routeurs ont une interface FastEthernet0/0
             updated_lines.append("interface FastEthernet0/0\n")
             updated_lines.append(" no ip address\n")
-
-            if ebgp: # Routeurs de bordure
-                updated_lines.append(" duplex full\n") # duplex full que pour fastethernet
-                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP": # même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
-            
-            else:
-                updated_lines.append(" negotiation auto\n")
-                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
-
+            updated_lines.append(" duplex full\n") # duplex full que pour fastethernet
+            updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
+            updated_lines.append(" ipv6 enable\n") 
+            if protocol == "RIP":  
+                updated_lines.append(" ipv6 rip ng enable\n") 
+            if protocol == "OSPF": 
+                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+        
 # Faire une fonction pour éviter la répétition entre chaque interface
         elif line.startswith("interface GigabitEthernet1/0"): # Tous les routeurs ont une interface GigabitEthernet1/0
             updated_lines.append("interface GigabitEthernet1/0\n")
             updated_lines.append(" no ip address\n")
-
-            if ebgp: # Routeurs de bordure
-                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP": # même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
-            
-            else:
-                updated_lines.append(" negotiation auto\n")
-                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
-
+            updated_lines.append(" negotiation auto\n")
+            updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
+            updated_lines.append(" ipv6 enable\n") 
+            if protocol == "RIP":  
+                updated_lines.append(" ipv6 rip ng enable\n") 
+            if protocol == "OSPF": 
+                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+        
 
         elif line.startswith("interface GigabitEthernet2/0"): # Tous les routeurs n'ont pas une interface GigabitEthernet2/0
             updated_lines.append("interface GigabitEthernet2/0\n")
             updated_lines.append(" no ip address\n")
             if "GigabitEthernet2/0" in dico_interfaces_routeur.keys():
-                
-                if ebgp: # Routeurs de bordure
-                    updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
-                    updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                    if protocol == "RIP": # même chose pour bordure ou non : peut être à modifier
-                        updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                    if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                        updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
-                
-                else:
-                    updated_lines.append(" negotiation auto\n")
-                    updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
-                    updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                    if protocol == "RIP":# même chose pour bordure ou non : peut être à modifier
-                        updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                    if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                        updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
+                updated_lines.append(" negotiation auto\n")
+                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
+                updated_lines.append(" ipv6 enable\n") 
+                if protocol == "RIP":  
+                    updated_lines.append(" ipv6 rip ng enable\n") 
+                if protocol == "OSPF": 
+                    updated_lines.append(" ipv6 ospf 1 area 0\n")    
             else:
                 updated_lines.append(" shutdown\n")
                 updated_lines.append(" negotiation auto\n")
@@ -115,23 +87,25 @@ def modif_config(filename, lines, dico, dicoAS, routeur):
         elif line.startswith("interface GigabitEthernet3/0"): # Tous les routeurs n'ont pas une interface GigabitEthernet3/0
             updated_lines.append("interface GigabitEthernet3/0\n")
             updated_lines.append(" no ip address\n")
+            
             if "GigabitEthernet3/0" in dico_interfaces_routeur.keys(): #On entre dans cette boucle si le routeur est en ibgp et qu'il a une interface GigabitEthernet3/0
-                
                 updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet3/0']}\n") #Ajout address
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
+                updated_lines.append(" ipv6 enable\n") 
+                if protocol == "RIP": 
+                    updated_lines.append(" ipv6 rip ng enable\n") 
+                if protocol == "OSPF": 
+                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
             
             elif ebgp: # Tous les routeurs en ebgp ont une interface GigabitEthernet3/0, c'est celle qui fait le lien entre 2 AS.
+                updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_border[routeur]['GigabitEthernet3/0']}\n") #Les liens entre 2 AS ne sont pas présent dans dico_interfaces_routeur mais dans dico_border.
-                updated_lines.append(" ipv6 enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "RIP": # même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 rip ng enable\n")# même chose pour bordure ou non : peut être à modifier
-                if protocol == "OSPF":# même chose pour bordure ou non : peut être à modifier
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")# même chose pour bordure ou non : peut être à modifier
+                updated_lines.append(" ipv6 enable\n") 
+                if protocol == "RIP":  
+                    updated_lines.append(" ipv6 rip ng enable\n") 
+                if protocol == "OSPF": 
+                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
+            
             else:
                 updated_lines.append(" shutdown\n")
                 updated_lines.append(" negotiation auto\n")
@@ -216,8 +190,5 @@ if __name__=="__main__":
 
         # Parcourir chaque routeur de l'AS
         for routeur in dicoAS["Routeurs"]:
-            # Nom du fichier de configuration créé basé sur le nom du routeur
-            filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
-            modif_config(filename, lines, dico, dicoAS, routeur) #Modifie le fichier modèle d'un routeur
+            modif_config(lines, dico, dicoAS, routeur) #Modifie le fichier modèle d'un routeur
     
- # type: ignore
