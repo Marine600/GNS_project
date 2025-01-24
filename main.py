@@ -10,25 +10,31 @@ def modif_config(lines, dico, dicoAS, routeur):
     number = routeur[1] + routeur[2] #Prendre uniquement le numero du routeur
     routeur_id = number+"."+number+"."+number+"."+number
 
+    #Détermination du protocole
+    protocol = dico["AS"][as_name]["Protocol"]
+
     # Détermination du nom de l'AS
     if routeur[1] == "1":
         as_name = "10"
+        autre_as = "20"
     else:
         as_name = "20"
-
-    protocol = dico["AS"][as_name]["Protocol"]
-
-    dico_interfaces, liste_subnet = fonction_conf_address.interface(dicoAS)
-    dico_interfaces_routeur = dico_interfaces[routeur]
-    dico_border = fonction_conf_address.border(dico["Border"])
-
-    # Liste pour stocker les lignes modifiées
-    updated_lines = []
+        autre_as = "10"
 
     # Récupérer l'info sur si le routeur est en ebgp ou pas, à partir des données JSON
     ebgp = False
     if routeur in dico["Border"]["Routers"]:
         ebgp = True
+   
+    # On récupère les résultats des fonctions attribuant les addresses ip et les interfaces
+    dico_interfaces, liste_subnet = fonction_conf_address.interface(dicoAS)
+    dico_interfaces_routeur = dico_interfaces[routeur]
+    dico_border = fonction_conf_address.border(dico["Border"])
+    
+    # Liste pour stocker les lignes modifiées
+    updated_lines = []    
+
+
 
     # Parcourir chaque ligne, et pour chaque ligne, soit la modifier si c'est nécessaire, soit la laisser à l'identique
     for line in lines:
@@ -38,7 +44,7 @@ def modif_config(lines, dico, dicoAS, routeur):
             updated_lines.append(f"hostname {routeur}\n")
 
 
-        # Modifier l'interface Loopback
+        # Modification de l'interface Loopback
         # ATTENTION: sur certaines lignes, comme par exemple sur la suivante, il y a un espace avant le texte dans le fichier json : NE PAS L'OUBLIER !
         elif line.startswith(" ipv6 address 4000"): # On a rajouté le 4000 car il y a plusieurs lignes dans le json qui commencent par ipv6 address.
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['Loopback0']}\n")
@@ -127,10 +133,6 @@ def modif_config(lines, dico, dicoAS, routeur):
                     updated_lines.append(f" neighbor {loop_voisin[0:-4]} remote-as {as_name}\n")
                     updated_lines.append(f" neighbor {loop_voisin[0:-4]} update-source Loopback0\n")
             if ebgp:
-                if as_name == "20":
-                    autre_as = "10"
-                else:
-                    autre_as = "20"
                 for lien in dico["Border"]["Liens_border"]: # On cherche le voisin ebgp de notre routeur
                     if lien[0] == routeur:
                         voisin_ebgp = lien[1]
