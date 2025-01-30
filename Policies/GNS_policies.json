@@ -1,0 +1,39 @@
+{
+"AS" :{
+    "10":{
+        "Relation" : "main",
+        "Routeurs" : ["R11", "R12", "R13", "R14", "R15"],
+        "Liens_ebgp" : [["R11","R61"],["R12","R31"],["R13","R51"],["R14","R41"],["R15","R21"]]           
+        },
+    "20":{
+        "Relation" : "Peer",
+        "Routeurs" : ["R21", "R22", "R23"],
+        "Liens_ebgp" : [["R15","R21"]]             
+        },
+    "30":{
+        "Relation" : "Peer",
+        "Routeurs" : ["R31", "R32", "R33"],
+        "Liens_ebgp" : [["R12","R31"]]            
+        },
+    "40":{
+        "Relation" : "Client",
+        "Routeurs" : ["R41", "R42", "R43"],
+        "Liens_ebgp" : [["R14","R41"]]             
+        },
+    "50":{
+        "Relation" : "Client",
+        "Routeurs" : ["R51", "R52", "R53"],
+        "Liens_ebgp" : [["R13","R51"]]            
+        },
+    "60":{
+        "Relation" : "Fournisseur",
+        "Routeurs" : ["R61", "R62", "R63"],
+        "Liens_ebgp" : [["R11","R61"]]            
+        }
+        }
+    }
+
+    
+
+
+            

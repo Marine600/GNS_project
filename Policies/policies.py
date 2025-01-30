@@ -17,9 +17,14 @@ def modif_config_policies(lines, dico_policies, routeur, filename):
             if #routeur de bordure connecté à une AS client :
                 updated_lines.append("ip community-list standard com_client permit 10:300\n") # On tag toutes les routes qui viennent d'un client.
 
-        # Voisins BGP à modifier (que pour les routeurs de bordure connectés à des clients)
 
+        elif line.startswith("  neighbor"):
+            updated_lines.append(line) # On conserve la ligne qui active le voisin bgp.
+            updated_lines.append(f" neighbour {adresse_voisin AS client} send community both\n")
+            if #routeur de bordure connecté à une AS client :
+                updated_lines.append(f" neighbour {adresse_voisin AS client} route-map {TAG_AS_NUMBER} in\n")
     
+
         elif line.startswith(" redistribute connected"): 
             updated_lines.append(" redistribute connected\n!\n!\n")
             if # routeur connecté à un client:
@@ -27,8 +32,10 @@ def modif_config_policies(lines, dico_policies, routeur, filename):
                 updated_lines.append(f" set community 10:150 additive \n")
                 updated_lines.append(f"route-map {TAG_AS_NUMBER} permit 50 \n")
 
+
             elif # routeur connecté à un peer:
             updated_lines.append(f"route-map {TAG_AS_NUMBER} permit 10 \n set local preference 100 \n")
+
 
             elif # routeur connecté à un fournisseur:
             updated_lines.append(f"route-map {TAG_AS_NUMBER} permit 10 \n set local preference 50 \n")
@@ -42,6 +49,7 @@ def modif_config_policies(lines, dico_policies, routeur, filename):
             updated_lines.append("route-map com_client permit 10\n")
             updated_lines.append(" match community com_client\n!\n")
             updated_lines.append("route-map com_client deny\n")
+       
             
         else:
             updated_lines.append(line)  # Conserver les lignes inchangées
