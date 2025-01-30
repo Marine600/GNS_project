@@ -219,7 +219,7 @@ if __name__=="__main__":
     
 
     # Si le routeur est un routeur de bordure de notre AS, lui appliquer les modifications concernant les policies.
-    for routeur in dico_policies.keys(): # Ligne à adapter en fonction du json
+    for routeur in dico_policies["Main"]["Routeurs"]:
          filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
          with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
             lines = file.readlines()  # Lire toutes les lignes du fichier
