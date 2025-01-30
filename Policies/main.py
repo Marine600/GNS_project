@@ -13,12 +13,8 @@ def modif_config(lines, dico, dicoAS, routeur):
     routeur_id = number+"."+number+"."+number+"."+number
 
     # Détermination du nom de l'AS
-    if routeur[1] == "1":
-        as_name = "10"
-        autre_as = "20"
-    else:
-        as_name = "20"
-        autre_as = "10"
+    as_name = routeur[1] + "0"
+
 
     #Détermination du protocole
     protocol = dico["AS"][as_name]["Protocol"]
@@ -141,7 +137,7 @@ def modif_config(lines, dico, dicoAS, routeur):
                     if lien[1]==routeur:
                         voisin_ebgp = lien[0]
                 ad_voisin_ebgp = dico_border[voisin_ebgp]["GigabitEthernet3/0"]
-                updated_lines.append(f" neighbor {ad_voisin_ebgp[0:-3]} remote-as {autre_as}\n") # Voisin d'une autre AS
+                updated_lines.append(f" neighbor {ad_voisin_ebgp[0:-3]} remote-as {voisin_ebgp[1]+"0"}\n") # Voisin d'une autre AS
 
 
         elif line.startswith(" address-family ipv6"): #  Les routeurs de bordure advertise tous les sous-réseaux internes à l'AS.
@@ -219,10 +215,10 @@ if __name__=="__main__":
     
 
     # Si le routeur est un routeur de bordure de notre AS, lui appliquer les modifications concernant les policies.
-    for routeur in dico_policies["Main"]["Routeurs"]:
+    for routeur in dico_policies["Main"]["10"]["Routeurs"]:
          filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
          with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
             lines = file.readlines()  # Lire toutes les lignes du fichier
-            policies.modif_config_policies(lines, dico_policies, routeur)
+            policies.modif_config_policies(lines, dico_policies, routeur, filename)
 
-    drag_and_drop.drag_and_drop(dico_corresp)
+    # drag_and_drop.drag_and_drop(dico_corresp)

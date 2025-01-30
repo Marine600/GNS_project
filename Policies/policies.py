@@ -1,5 +1,10 @@
 import json
-
+"""
+Local pref :
+Customer : 150
+Peer : 100
+Provider : 50
+"""
 
 # On applique cette fonction à tous les routeurs de bordure de notre AS après leur avoir préalablement appliqué la fonction de configuration de base.
 def modif_config_policies(lines, dico_policies, routeur, filename):
@@ -9,25 +14,25 @@ def modif_config_policies(lines, dico_policies, routeur, filename):
     # On détermine si le routeur est connecté à un client:
     co_client = False
     nb_neighbor_customer = 0
-    for As in dico_policies["Client"].values():
+    for As in dico_policies["Client"].keys():
         for lien_ebgp in dico_policies["Client"][As]["Liens_ebgp"]:
             if routeur in lien_ebgp:
                 co_client = True
                 if lien_ebgp[0] == routeur:
-                    nb_neighbor_customer = lien_ebgp[1]
+                    nb_neighbor_customer = lien_ebgp[1][1] + lien_ebgp[1][2]
                 else:
-                    nb_neighbor_customer = lien_ebgp[0]
+                    nb_neighbor_customer = lien_ebgp[0][1] + lien_ebgp[0][2]
     
     # On détermine si le routeur est connecté à un peer:
     co_peer = False
-    for As in dico_policies["Peer"].values():
+    for As in dico_policies["Peer"].keys():
         for lien_ebgp in dico_policies["Peer"][As]["Liens_ebgp"]:
             if routeur in lien_ebgp:
                 co_peer = True
 
     # On détermine si le routeur est connecté à un fournisseur:
     co_fournisseur = False
-    for As in dico_policies["Fournisseur"].values():
+    for As in dico_policies["Fournisseur"].keys():
         for lien_ebgp in dico_policies["Fournisseur"][As]["Liens_ebgp"]:
             if routeur in lien_ebgp:
                 co_fournisseur = True
@@ -46,9 +51,9 @@ def modif_config_policies(lines, dico_policies, routeur, filename):
 
         elif line.startswith("  neighbor"):
             updated_lines.append(line) # On conserve la ligne qui active le voisin bgp.
-            updated_lines.append(f" neighbour 2000:100:{nb_neighbor_customer}::{nb_neighbor_customer} send community both\n") # addresse du voisin dans l'AS client
+            updated_lines.append(f"{line[:-9]}send community both\n")
             if co_client :
-                updated_lines.append(f" neighbour 2000:100:{nb_neighbor_customer}::{nb_neighbor_customer} route-map TAG_client in\n")
+                updated_lines.append(f"{line[:-9]}route-map TAG_client in\n")
     
 
         elif line.startswith(" redistribute connected"): 
