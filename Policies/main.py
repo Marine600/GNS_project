@@ -195,10 +195,6 @@ if __name__=="__main__":
     with open ("GNS.json", 'r') as json_file_1:
         dico = json.load(json_file_1)
 
-    # Charger le fichier JSON contenant les informations sur les policies
-    with open ("GNS_policies.json", 'r') as json_file_2:
-        dico_policies = json.load(json_file_2)
-
     # Parcourir chaque AS dans le fichier JSON principal
     for dicoAS in dico["AS"].values():
         # Lire le fichier modèle rip ou ospf en fonction de l'AS dans lequel se trouve le routeur
@@ -215,10 +211,11 @@ if __name__=="__main__":
     
 
     # Si le routeur est un routeur de bordure de notre AS, lui appliquer les modifications concernant les policies.
-    for routeur in dico_policies["Main"]["10"]["Routeurs"]:
-         filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
-         with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
+    # c-à-d si le routeur se trouve dans liens borders
+    for routeur in dico["AS"]["10"]["Routeurs"]: # Attention ne fonctionne que si on connait le nom de l'as main, code à modifier pour plus d'adaptabilité.
+        filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
+        with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
             lines = file.readlines()  # Lire toutes les lignes du fichier
-            policies.modif_config_policies(lines, dico_policies, routeur, filename)
+            policies.modif_config_policies(lines, dico, routeur, filename)
 
     # drag_and_drop.drag_and_drop(dico_corresp)

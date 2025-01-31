@@ -7,35 +7,33 @@ Provider : 50
 """
 
 # On applique cette fonction à tous les routeurs de bordure de notre AS après leur avoir préalablement appliqué la fonction de configuration de base.
-def modif_config_policies(lines, dico_policies, routeur, filename):
+def modif_config_policies(lines, dico, routeur, filename):
 
     nb_router = routeur[1]+routeur[2]
     
-    # On détermine si le routeur est connecté à un client:
+    # On détermine si le routeur est connecté à un client, un fournisseur ou un peer
     co_client = False
-    nb_neighbor_customer = 0
-    for As in dico_policies["Client"].keys():
-        for lien_ebgp in dico_policies["Client"][As]["Liens_ebgp"]:
-            if routeur in lien_ebgp:
-                co_client = True
-                if lien_ebgp[0] == routeur:
-                    nb_neighbor_customer = lien_ebgp[1][1] + lien_ebgp[1][2]
-                else:
-                    nb_neighbor_customer = lien_ebgp[0][1] + lien_ebgp[0][2]
-    
-    # On détermine si le routeur est connecté à un peer:
-    co_peer = False
-    for As in dico_policies["Peer"].keys():
-        for lien_ebgp in dico_policies["Peer"][As]["Liens_ebgp"]:
-            if routeur in lien_ebgp:
-                co_peer = True
-
-    # On détermine si le routeur est connecté à un fournisseur:
     co_fournisseur = False
-    for As in dico_policies["Fournisseur"].keys():
-        for lien_ebgp in dico_policies["Fournisseur"][As]["Liens_ebgp"]:
-            if routeur in lien_ebgp:
+    co_peer = False
+    liste_clients = dico["Relation"]["Clients"]
+    liste_fournisseurs = dico["Relation"]["Fournisseurs"]
+    liste_peer = dico["Relation"]["Peers"]
+
+    for lien in dico["Border"]["Liens_border"]:
+        if routeur in lien:
+            if lien[0] == routeur:
+                autre = lien[1]
+            if lien[1] == routeur:
+                autre = lien[0]
+            if autre in liste_clients:
+                co_client = True
+                nb_neighbor_customer = autre[1]+autre[2]
+            if autre in liste_fournisseurs:
                 co_fournisseur = True
+            if autre in liste_peer:
+                co_peer = True
+    print(f"Routeur:{routeur}, co_fournisseur:{co_fournisseur}, co_client:{co_client}, co_peer:{co_peer}")              
+
 
     # Liste pour stocker les lignes modifiées
     updated_lines = []    
