@@ -216,6 +216,6 @@ if __name__=="__main__":
         filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
         with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
             lines = file.readlines()  # Lire toutes les lignes du fichier
-            policies.modif_config_policies(lines, dico, routeur, filename)
+            policies.modif_config_policies(lines, dico,"10", routeur, filename)
 
     # drag_and_drop.drag_and_drop(dico_corresp)

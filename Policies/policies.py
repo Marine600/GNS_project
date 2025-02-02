@@ -1,89 +1,108 @@
 import json
-"""
-Local pref :
-Customer : 150
-Peer : 100
-Provider : 50
-"""
+import fonction_conf_address
 
-# On applique cette fonction à tous les routeurs de bordure de notre AS après leur avoir préalablement appliqué la fonction de configuration de base.
-def modif_config_policies(lines, dico, routeur, filename):
-
-    nb_router = routeur[1]+routeur[2]
+def modif_config_policies(lines, dico, nAS, routeur, filename):
+    updated_lines = []
+    # Communities sous la forme AS:NBR
+    communities = {"customer" : f"{nAS}:300", "peer": f"{nAS}:150", "provider" : f"{nAS}:100"}
     
-    # On détermine si le routeur est connecté à un client, un fournisseur ou un peer
-    co_client = False
-    co_fournisseur = False
+    liens_bgp = dico["Border"]["Liens_border"]
+
+    interfaces_bordures = fonction_conf_address.border(dico["Border"])
+
+    # On regarde si routeur connecté à client, peer ou provider
+    co_customer = False
     co_peer = False
-    liste_clients = dico["Relation"]["Clients"]
-    liste_fournisseurs = dico["Relation"]["Fournisseurs"]
-    liste_peer = dico["Relation"]["Peers"]
+    co_provider = False
 
-    for lien in dico["Border"]["Liens_border"]:
-        if routeur in lien:
-            if lien[0] == routeur:
-                autre = lien[1]
-            if lien[1] == routeur:
-                autre = lien[0]
-            if autre in liste_clients:
-                co_client = True
-                nb_neighbor_customer = autre[1]+autre[2]
-            if autre in liste_fournisseurs:
-                co_fournisseur = True
-            if autre in liste_peer:
-                co_peer = True
-    print(f"Routeur:{routeur}, co_fournisseur:{co_fournisseur}, co_client:{co_client}, co_peer:{co_peer}")              
+    clients = dico["AS"][nAS]["AS_voisins"]["customers"]
+    peers = dico["AS"][nAS]["AS_voisins"]["peers"]
+    providers = dico["AS"][nAS]["AS_voisins"]["providers"]
 
-
-    # Liste pour stocker les lignes modifiées
-    updated_lines = []    
-
-    # Parcourir chaque ligne, et pour chaque ligne, soit la modifier si c'est nécessaire, soit la laisser à l'identique
-    for line in lines:
-
-        if line.startswith("ip forward protocol nd"): 
-            updated_lines.append("ip forward protocol nd\n!\nip bgp-community new-format\n")
-            if co_client :
-                updated_lines.append("ip community-list standard com_client permit 10:300\n") # On tag toutes les routes qui viennent d'un client.
-
-
-        elif line.startswith("  neighbor"):
-            updated_lines.append(line) # On conserve la ligne qui active le voisin bgp.
-            updated_lines.append(f"{line[:-9]}send community both\n")
-            if co_client :
-                updated_lines.append(f"{line[:-9]}route-map TAG_client in\n")
+    # On détermine si le routeur est un routeur de bordure et son voisin BGP
+    for lien in liens_bgp :
+        if routeur in lien :
+            if lien[0] == routeur :
+                voisin_bgp = lien[1]
+            if lien[1] == routeur :
+                voisin_bgp = lien[0]
+        #else : # Si le routeur n'est pas un routeur de bordure on n'applique pas tout le reste
+         #   return
     
+    # On détermine si le routeur est connecté à un routeur d'un client, d'un provider ou d'un peer
+    AS_voisin = voisin_bgp[1] + "0"
+    if AS_voisin in clients :
+        co_customer = True
+    if AS_voisin in peers :
+        co_peer = True
+    if AS_voisin in providers :
+        co_provider = True
+
+    #for AS in dico["AS"].keys():
+        # On regarde quel est le lien entre l'AS qu'on configure et l'AS voisin
+        #if AS == AS_voisin :
+         #   if AS in clients :
+          #      co_customer = True
+           # if AS in peers :
+            #    co_peer = True 
+            #if AS in providers :
+             #   co_provider = True 
+
+    print(f"Routeur:{routeur}, co_fournisseur:{co_provider}, co_client:{co_customer}, co_peer:{co_peer}")
+    updates_lines = []
+
+    for line in lines :
+        if line.startswith("  neighbor"):
+            updated_lines.append(line) # On conserve la ligne qui active le voisin bgp.
+            if co_customer :
+                if line.startswith(f"  neighbor {interfaces_bordures[voisin_bgp]["GigabitEthernet3/0"][0:-3]}"):
+                    updated_lines.append(f"{line[:-9]}send-community both\n"+f"{line[:-9]}route-map TAG_CLIENT in\n")
+                else :    
+                    updated_lines.append(f"{line[:-9]}send-community both\n")
+            elif co_peer :
+                if line.startswith(f"  neighbor {interfaces_bordures[voisin_bgp]["GigabitEthernet3/0"][0:-3]}"):
+                    updated_lines.append(f"{line[:-9]}route-map TAG_peer in\n")
+                    updated_lines.append(f"{line[:-9]}route-map filtre_client out\n")
+            elif co_provider :
+                if line.startswith(f"  neighbor {interfaces_bordures[voisin_bgp]["GigabitEthernet3/0"][0:-3]}"):
+                    updated_lines.append(f"{line[:-9]}route-map TAG_provider in\n")
+                    updated_lines.append(f"{line[:-9]}route-map filtre_client out\n")
+
+        elif line.startswith("ip forward-protocol nd"): 
+            updated_lines.append("ip forward-protocol nd\n!\nip bgp-community new-format\n")
+            if co_peer or co_provider :
+                updated_lines.append(f"ip community-list standard com_client permit {communities["customer"]}\n") # On tag toutes les routes qui viennent d'un client.
 
         elif line.startswith(" redistribute connected"): 
-            updated_lines.append(" redistribute connected\n!\n!\n")
-            if co_client:
-                updated_lines.append(f"route-map TAG_client permit 10 \n set local preference 150 \n")
-                updated_lines.append(f" set community 10:150 additive \n")
+            updated_lines.append(" redistribute connected\n!\n!\nipv6 router rip enable\n!\n!\n")
+            if co_customer:
+                updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference 150 \n")
+                updated_lines.append(f" set community {communities["customer"]} additive \n")
                 updated_lines.append(f"route-map TAG_client permit 50 \n")
 
             elif co_peer:
-                updated_lines.append(f"route-map TAG_peer permit 10 \n set local preference 100 \n")
+                updated_lines.append(f"route-map TAG_peer permit 10 \n set local-preference 100 \n!\nroute-map TAG_peer permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50")
 
-            elif co_fournisseur:
-                updated_lines.append(f"route-map TAG_provider permit 10 \n set local preference 50 \n")
-
-
-        # Pour tous les routeurs de bordure
-        #Cas de rip
-        elif line.startswith(" redistribute connected"):
-            updated_lines.append(" redistribute connected\n!\n!\n")
-            updated_lines.append("route-map com_client permit 10\n")
-            updated_lines.append(" match community com_client\n!\n")
-            updated_lines.append("route-map com_client deny\n")
-        # Cas de ospf
-        elif line.startswith("ipv6 router ospf 1"):
+            elif co_provider:
+                updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference 50 \n!\nroute-map TAG_provider permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50\n")
+        
+        elif line.startswith("ipv6 router ospf 1"): 
             updated_lines.append(line)
-            updated_lines.append(f" router-id {nb_router}.{nb_router}.{nb_router}.{nb_router}\n!\n!\n")
-            updated_lines.append("route-map com_client permit 10\n")
-            updated_lines.append(" match community com_client\n!\n")
-            updated_lines.append("route-map com_client deny\n")
-       
-            
+            if co_customer:
+                updated_lines.append(f"route-map TAG_client permit 10 \n set local preference 150 \n")
+                updated_lines.append(f" set community {communities["customer"]} additive \n")
+                updated_lines.append(f"route-map TAG_client permit 50 \n")
+
+            elif co_peer:
+                updated_lines.append(f"route-map TAG_peer permit 10 \n set local preference 100 \n!\n\nroute-map TAG_peer permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\n\nroute-map filtre_client deny 50\n")
+
+            elif co_provider:
+                updated_lines.append(f"route-map TAG_provider permit 10 \n set local preference 50 \n!\n\nroute-map TAG_provider permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\n\nroute-map filtre_client deny 50\n")
+        
         else:
             updated_lines.append(line)  # Conserver les lignes inchangées
 
@@ -92,3 +111,13 @@ def modif_config_policies(lines, dico, routeur, filename):
     with open(filename, 'w') as file: # Ce fichier n'existe pas encore, il est donc créé.
         file.writelines(updated_lines)
         print(f"Ajout des policies sur le fichier de configuration de {routeur} terminées.")
+
+    
+
+
+
+    
+
+    
+
+    
