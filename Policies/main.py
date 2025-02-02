@@ -212,10 +212,13 @@ if __name__=="__main__":
 
     # Si le routeur est un routeur de bordure de notre AS, lui appliquer les modifications concernant les policies.
     # c-à-d si le routeur se trouve dans liens borders
-    for routeur in dico["AS"]["10"]["Routeurs"]: # Attention ne fonctionne que si on connait le nom de l'as main, code à modifier pour plus d'adaptabilité.
-        filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
-        with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
-            lines = file.readlines()  # Lire toutes les lignes du fichier
-            policies.modif_config_policies(lines, dico,"10", routeur, filename)
+    for AS_network in dico["AS"].keys():
+        if dico["AS"][f"{AS_network}"]["Relation"] == "Main":
+            AS_name = AS_network
+            for routeur in dico["AS"][f"{AS_name}"]["Routeurs"]: 
+                filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
+                with open(filename, 'r') as file: # On récupère le fichier de config précedemment créé pour le routeur en question.
+                    lines = file.readlines()  # Lire toutes les lignes du fichier
+                    policies.modif_config_policies(lines, dico, AS_name, routeur, filename)
 
     # drag_and_drop.drag_and_drop(dico_corresp)
