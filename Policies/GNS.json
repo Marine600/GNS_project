@@ -5,49 +5,49 @@
         "Relation": "Main",
         "Routeurs" : ["R11", "R12", "R13", "R14", "R15"],
         "Liens" : [["R11","R12"],["R12","R13"],["R13","R14"],["R14","R15"],["R15","R11"]],             
-        "Ip_range" : "2000:100:1::/54"
+        "Ip_range" : "2000:100:1::/48"
         },
     "20":{
         "Protocol" : "RIP",
         "Relation": "Peer",
         "Routeurs" : ["R21", "R22", "R23"],
         "Liens" : [["R21","R22"],["R22","R23"],["R23","R21"]],             
-        "Ip_range" : "2000:100:2::/54"
+        "Ip_range" : "2000:100:2::/48"
         },
     "30":{
         "Protocol" : "OSPF",
         "Relation": "Peer",
         "Routeurs" : ["R31", "R32", "R33"],
         "Liens" : [["R31","R32"],["R32","R33"],["R33","R31"]],             
-        "Ip_range" : "2000:100:3::/54"
+        "Ip_range" : "2000:100:3::/48"
         },
     "40":{
         "Protocol" : "RIP",
         "Relation": "Client",
         "Routeurs" : ["R41", "R42", "R43"],
         "Liens" : [["R41","R42"],["R42","R43"],["R43","R41"]],             
-        "Ip_range" : "2000:100:4::/54"
+        "Ip_range" : "2000:100:4::/48"
         },
     "50":{
         "Protocol" : "OSPF",
         "Relation": "Client",
         "Routeurs" : ["R51", "R52", "R53"],
         "Liens" : [["R51","R52"],["R52","R53"],["R53","R51"]],             
-        "Ip_range" : "2000:100:5::/54"
+        "Ip_range" : "2000:100:5::/48"
         },
     "60":{
         "Protocol" : "OSPF",
         "Relation": "Fournisseur",
         "Routeurs" : ["R61", "R62", "R63"],
         "Liens" : [["R61","R62"],["R62","R63"],["R63","R61"]],             
-        "Ip_range" : "2000:100:6::/54"
+        "Ip_range" : "2000:100:6::/48"
         }
     },
 
 "Border":{
         "Routers" : ["R11", "R12", "R13", "R14", "R15","R31","R51","R41","R21", "R61"],
         "Liens_border" : [["R11", "R61"], ["R12", "R31"],["R13", "R51"], ["R14", "R41"], ["R15", "R21"]],
-        "Ip_range" : "2000:100:7::/54"
+        "Ip_range" : "2000:100:7::/48"
         },
 
 "Relation":{
