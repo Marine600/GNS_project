@@ -2,6 +2,7 @@
 "AS" :{
     "10":{
         "Protocol" : "RIP",
+        "Process" : "ng",
         "Relation": "Main",
         "Routeurs" : ["R11", "R12", "R13", "R14", "R15"],
         "Liens" : [["R11","R12"],["R12","R13"],["R13","R14"],["R14","R15"],["R15","R11"]],             
@@ -10,6 +11,7 @@
         },
     "20":{
         "Protocol" : "RIP",
+        "Process" : "1",
         "Relation": "Peer",
         "Routeurs" : ["R21", "R22", "R23"],
         "Liens" : [["R21","R22"],["R22","R23"],["R23","R21"]],             
