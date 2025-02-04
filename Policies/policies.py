@@ -56,7 +56,7 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
             updated_lines.append(line) # On conserve la ligne qui active le voisin bgp.
             if co_customer :
                 if line.startswith(f"  neighbor {interfaces_bordures[voisin_bgp]["GigabitEthernet3/0"][0:-3]}"):
-                    updated_lines.append(f"{line[:-9]}send-community both\n"+f"{line[:-9]}route-map TAG_CLIENT in\n")
+                    updated_lines.append(f"{line[:-9]}send-community both\n"+f"{line[:-9]}route-map TAG_client in\n")
                 else :    
                     updated_lines.append(f"{line[:-9]}send-community both\n")
             elif co_peer :

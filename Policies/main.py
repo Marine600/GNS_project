@@ -105,8 +105,6 @@ def modif_config(lines, dico, dicoAS, routeur):
                 updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_border[routeur]['GigabitEthernet3/0']}\n") #Les liens entre 2 AS ne sont pas présent dans dico_interfaces_routeur mais dans dico_border.
                 updated_lines.append(" ipv6 enable\n") 
-                if protocol == "RIP":  
-                    updated_lines.append(" ipv6 rip ng enable\n") 
                 if protocol == "OSPF": 
                     updated_lines.append(" ipv6 ospf 1 area 0\n") 
             
