@@ -2,6 +2,8 @@ import json
 import fonction_conf_address
 import drag_and_drop
 
+interfaces_dispos = ["FastEthernet0/0", "GigabitEthernet1/0", "GigabitEthernet2/0", "GigabitEthernet3/0"]
+
 def modif_config(lines, dico, AS_name, routeur):
 
     # Nom du fichier de configuration créé basé sur le nom du routeur
@@ -35,7 +37,6 @@ def modif_config(lines, dico, AS_name, routeur):
     # Parcourir chaque ligne, et pour chaque ligne, soit la modifier si c'est nécessaire, soit la laisser à l'identique
     for line in lines:
 
-
         if line.startswith("hostname"):  # Modifier le hostname
             updated_lines.append(f"hostname {routeur}\n")
 
@@ -45,34 +46,35 @@ def modif_config(lines, dico, AS_name, routeur):
         elif line.startswith(" ipv6 address 4000"): # On a rajouté le 4000 car il y a plusieurs lignes dans le json qui commencent par ipv6 address.
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['Loopback0']}\n")
 
-
         elif line.startswith("interface FastEthernet0/0"): # Tous les routeurs ont une interface FastEthernet0/0
             updated_lines.append("interface FastEthernet0/0\n")
             updated_lines.append(" no ip address\n")
-            updated_lines.append(" duplex full\n") # duplex full que pour fastethernet
-            updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
-            updated_lines.append(" ipv6 enable\n") 
-            if protocol == "RIP":  
-                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
-            if protocol == "OSPF": 
-                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
+            if "FastEthernet0/0" in dico_interfaces_routeur.keys():
+                updated_lines.append(" duplex full\n") # duplex full que pour fastethernet
+                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
+                updated_lines.append(" ipv6 enable\n") 
+                if protocol == "RIP":  
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
+                if protocol == "OSPF": 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
         
-# Faire une fonction pour éviter la répétition entre chaque interface
         elif line.startswith("interface GigabitEthernet1/0"): # Tous les routeurs ont une interface GigabitEthernet1/0
             updated_lines.append("interface GigabitEthernet1/0\n")
             updated_lines.append(" no ip address\n")
-            updated_lines.append(" negotiation auto\n")
-            updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
-            updated_lines.append(" ipv6 enable\n") 
-            if protocol == "RIP":  
-                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
-            if protocol == "OSPF": 
-                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
-        
+            if "GigabitEthernet1/0" in dico_interfaces_routeur.keys():
+                updated_lines.append(" negotiation auto\n")
+                updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
+                updated_lines.append(" ipv6 enable\n") 
+                if protocol == "RIP":  
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
+                if protocol == "OSPF": 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
+            
 
         elif line.startswith("interface GigabitEthernet2/0"): # Tous les routeurs n'ont pas une interface GigabitEthernet2/0
             updated_lines.append("interface GigabitEthernet2/0\n")
             updated_lines.append(" no ip address\n")
+
             if "GigabitEthernet2/0" in dico_interfaces_routeur.keys():
                 updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
@@ -205,4 +207,4 @@ if __name__=="__main__":
         for routeur in dico["AS"][AS_name]["Routeurs"]:
             modif_config(lines, dico, AS_name, routeur) #Modifie le fichier modèle d'un routeur
 
-    drag_and_drop(dico_corresp)
+    #drag_and_drop(dico_corresp)
