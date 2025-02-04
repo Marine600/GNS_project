@@ -58,9 +58,9 @@ def modif_config(lines, dico, dicoAS, routeur):
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
             updated_lines.append(" ipv6 enable\n") 
             if protocol == "RIP":  
-                updated_lines.append(" ipv6 rip ng enable\n") 
+                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
             if protocol == "OSPF": 
-                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
         
 # Faire une fonction pour éviter la répétition entre chaque interface
         elif line.startswith("interface GigabitEthernet1/0"): # Tous les routeurs ont une interface GigabitEthernet1/0
@@ -70,9 +70,9 @@ def modif_config(lines, dico, dicoAS, routeur):
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
             updated_lines.append(" ipv6 enable\n") 
             if protocol == "RIP":  
-                updated_lines.append(" ipv6 rip ng enable\n") 
+                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
             if protocol == "OSPF": 
-                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
         
 
         elif line.startswith("interface GigabitEthernet2/0"): # Tous les routeurs n'ont pas une interface GigabitEthernet2/0
@@ -83,9 +83,9 @@ def modif_config(lines, dico, dicoAS, routeur):
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "RIP":  
-                    updated_lines.append(" ipv6 rip ng enable\n") 
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")    
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n")    
             else:
                 updated_lines.append(" shutdown\n")
                 updated_lines.append(" negotiation auto\n")
@@ -100,16 +100,16 @@ def modif_config(lines, dico, dicoAS, routeur):
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet3/0']}\n") #Ajout address
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "RIP": 
-                    updated_lines.append(" ipv6 rip ng enable\n") 
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
             
             elif ebgp: # Tous les routeurs en ebgp ont une interface GigabitEthernet3/0, c'est celle qui fait le lien entre 2 AS.
                 updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_border[routeur]['GigabitEthernet3/0']}\n") #Les liens entre 2 AS ne sont pas présent dans dico_interfaces_routeur mais dans dico_border.
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
             
             else:
                 updated_lines.append(" shutdown\n")

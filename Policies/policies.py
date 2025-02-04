@@ -93,7 +93,7 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
                 updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference {loc_pref["provider"]} \n!\nroute-map TAG_provider permit 50\n!\n")
                 updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50\n")
         
-        elif line.startswith("ipv6 router ospf 1"): 
+        elif line.startswith(f"ipv6 router ospf {dico[nAS]["Process"]}"): 
             updated_lines.append(line)
             if co_customer:
                 updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference {loc_pref["customer"]} \n")

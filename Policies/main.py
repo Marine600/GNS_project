@@ -55,9 +55,9 @@ def modif_config(lines, dico, dicoAS, routeur):
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['FastEthernet0/0']}\n") #Ajout address
             updated_lines.append(" ipv6 enable\n") 
             if protocol == "RIP":  
-                updated_lines.append(" ipv6 rip ng enable\n") 
+                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
             if protocol == "OSPF": 
-                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
         
 # Faire une fonction pour éviter la répétition entre chaque interface
         elif line.startswith("interface GigabitEthernet1/0"): # Tous les routeurs ont une interface GigabitEthernet1/0
@@ -67,9 +67,9 @@ def modif_config(lines, dico, dicoAS, routeur):
             updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet1/0']}\n") #Ajout address
             updated_lines.append(" ipv6 enable\n") 
             if protocol == "RIP":  
-                updated_lines.append(" ipv6 rip ng enable\n") 
+                updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
             if protocol == "OSPF": 
-                updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
         
 
         elif line.startswith("interface GigabitEthernet2/0"): # Tous les routeurs n'ont pas une interface GigabitEthernet2/0
@@ -80,9 +80,9 @@ def modif_config(lines, dico, dicoAS, routeur):
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet2/0']}\n") #Ajout address
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "RIP":  
-                    updated_lines.append(" ipv6 rip ng enable\n") 
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n")    
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n")    
             else:
                 updated_lines.append(" shutdown\n")
                 updated_lines.append(" negotiation auto\n")
@@ -97,16 +97,16 @@ def modif_config(lines, dico, dicoAS, routeur):
                 updated_lines.append(f" ipv6 address {dico_interfaces_routeur['GigabitEthernet3/0']}\n") #Ajout address
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "RIP": 
-                    updated_lines.append(" ipv6 rip ng enable\n") 
+                    updated_lines.append(f" ipv6 rip {dicoAS["Process"]} enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
             
             elif ebgp: # Tous les routeurs en ebgp ont une interface GigabitEthernet3/0, c'est celle qui fait le lien entre 2 AS.
                 updated_lines.append(" negotiation auto\n")
                 updated_lines.append(f" ipv6 address {dico_border[routeur]['GigabitEthernet3/0']}\n") #Les liens entre 2 AS ne sont pas présent dans dico_interfaces_routeur mais dans dico_border.
                 updated_lines.append(" ipv6 enable\n") 
                 if protocol == "OSPF": 
-                    updated_lines.append(" ipv6 ospf 1 area 0\n") 
+                    updated_lines.append(f" ipv6 ospf {dicoAS["Process"]} area 0\n") 
             
             else:
                 updated_lines.append(" shutdown\n")
@@ -174,20 +174,20 @@ def modif_config(lines, dico, dicoAS, routeur):
 if __name__=="__main__": 
     # Dictionnaire des correspondances entre les routeurs et leurs dossiers et fichiers GNS associes
     # Ajouter les noms des dossiers quand on aura mis les routeurs sur GNS
-    dico_corresp = {"R11" : ["7ef440ec-25c8-47fb-b7e7-1b36dd9262ef", "i1"],
-        "R12" : ["927c24c3-2124-465c-9556-09ad24f48f26", "i2"],
-        "R13" : ["d7375c4b-1bdb-4083-8f1c-611709f56f30", "i3"],
-        "R14" : ["9710d89c-376a-4c7e-a668-3476ae0ce9fa", "i4"],
-        "R15" : ["1756a62a-09ed-4984-9de2-fad24258796d", "i5"],
-        "R16" : ["d28cc3ef-2e3f-4252-9066-791779c1b476", "i6"],
-        "R17" : ["f6680801-fa0d-4175-bd0a-d69b65f9a322", "i7"],
-        "R21" : ["16718634-7aa5-43dd-867d-005cc1244808", "i8"],
-        "R22" : ["ddcd2044-6e89-480d-b7a7-8031be2852a6", "i9"],
-        "R23" : ["de54263c-aebb-4f08-96b5-8f42fe218d76", "i10"],
-        "R24" : ["54331c91-9e00-4b4f-b07d-1f2005b889a2", "i11"],
-        "R25" : ["d6b8a8ea-1042-474a-9956-e06e3bf01445", "i12"],
-        "R26" : ["ee23df29-0df5-442d-8218-8636ac519714", "i13"],
-        "R27" : ["949009f5-c752-4737-af50-4f7fea27c35d", "i14"]}
+    dico_corresp = {"R11" : ["", "i1"],
+        "R12" : ["", "i2"],
+        "R13" : ["", "i3"],
+        "R14" : ["", "i4"],
+        "R15" : ["", "i5"],
+        "R16" : ["", "i6"],
+        "R17" : ["", "i7"],
+        "R21" : ["", "i8"],
+        "R22" : ["", "i9"],
+        "R23" : ["", "i10"],
+        "R24" : ["", "i11"],
+        "R25" : ["", "i12"],
+        "R26" : ["", "i13"],
+        "R27" : ["", "i14"]}
 
     # Charger le fichier JSON principal
     with open ("GNS.json", 'r') as json_file_1:
