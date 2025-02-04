@@ -1,10 +1,16 @@
-import json
 import fonction_conf_address
+
+# Valeurs des communautés
+comm_values = {"customer" : 300, "peer" : 150, "provider" : 100}
+
+# Valeurs des local-preference
+loc_pref = {"customer" : 150, "peer" : 100, "provider" : 50}
 
 def modif_config_policies(lines, dico, nAS, routeur, filename):
     updated_lines = []
+
     # Communities sous la forme AS:NBR
-    communities = {"customer" : f"{nAS}:300", "peer": f"{nAS}:150", "provider" : f"{nAS}:100"}
+    communities = {"customer" : f"{nAS}:{comm_values["customer"]}", "peer": f"{nAS}:{comm_values["peer"]}", "provider" : f"{nAS}:{comm_values["provider"]}"}
     
     liens_bgp = dico["Border"]["Liens_border"]
 
@@ -40,7 +46,7 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
 
     #for AS in dico["AS"].keys():
         # On regarde quel est le lien entre l'AS qu'on configure et l'AS voisin
-        #if AS == AS_voisin :
+        #if AS == AS_voisin : 
          #   if AS in clients :
           #      co_customer = True
            # if AS in peers :
@@ -49,7 +55,6 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
              #   co_provider = True 
 
     print(f"Routeur:{routeur}, co_fournisseur:{co_provider}, co_client:{co_customer}, co_peer:{co_peer}")
-    updates_lines = []
 
     for line in lines :
         if line.startswith("  neighbor"):
@@ -76,32 +81,32 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
         elif line.startswith(" redistribute connected"): 
             updated_lines.append(" redistribute connected\n!\n!\nipv6 router rip enable\n!\n!\n")
             if co_customer:
-                updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference 150 \n")
+                updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference {loc_pref["customer"]} \n")
                 updated_lines.append(f" set community {communities["customer"]} additive \n")
                 updated_lines.append(f"route-map TAG_client permit 50 \n")
 
             elif co_peer:
-                updated_lines.append(f"route-map TAG_peer permit 10 \n set local-preference 100 \n!\nroute-map TAG_peer permit 50\n!\n")
+                updated_lines.append(f"route-map TAG_peer permit 10 \n set local-preference {loc_pref["peer"]} \n!\nroute-map TAG_peer permit 50\n!\n")
                 updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50")
 
             elif co_provider:
-                updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference 50 \n!\nroute-map TAG_provider permit 50\n!\n")
+                updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference {loc_pref["provider"]} \n!\nroute-map TAG_provider permit 50\n!\n")
                 updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50\n")
         
         elif line.startswith("ipv6 router ospf 1"): 
             updated_lines.append(line)
             if co_customer:
-                updated_lines.append(f"route-map TAG_client permit 10 \n set local preference 150 \n")
+                updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference {loc_pref["customer"]} \n")
                 updated_lines.append(f" set community {communities["customer"]} additive \n")
                 updated_lines.append(f"route-map TAG_client permit 50 \n")
 
             elif co_peer:
-                updated_lines.append(f"route-map TAG_peer permit 10 \n set local preference 100 \n!\n\nroute-map TAG_peer permit 50\n!\n")
-                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\n\nroute-map filtre_client deny 50\n")
+                updated_lines.append(f"route-map TAG_peer permit 10 \n set local-preference {loc_pref["peer"]} \n!\nroute-map TAG_peer permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50")
 
             elif co_provider:
-                updated_lines.append(f"route-map TAG_provider permit 10 \n set local preference 50 \n!\n\nroute-map TAG_provider permit 50\n!\n")
-                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\n\nroute-map filtre_client deny 50\n")
+                updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference {loc_pref["provider"]} \n!\nroute-map TAG_provider permit 50\n!\n")
+                updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50\n")
         
         else:
             updated_lines.append(line)  # Conserver les lignes inchangées

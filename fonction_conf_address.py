@@ -1,5 +1,5 @@
-# ATTENTION : ces fonctions ont été écrites pour une version optimisée du Json qui permet d'automatiser l'addressage ipv6 
-# en partant seulement du préfixe de l'AS (exemple plus bas)
+# Interfaces disponibles sur les routeurs 
+interfaces_dispos = ["FastEthernet0/0", "GigabitEthernet1/0", "GigabitEthernet2/0", "GigabitEthernet3/0"]
 
 def addressage(AS):
     '''
@@ -57,16 +57,16 @@ def interface(AS):
         router_interface = {}
         
         router_interface["Loopback0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/128"
-        router_interface["FastEthernet0/0"] = addresses[0]
+        router_interface[interfaces_dispos[0]] = addresses[0]
         
         if len(addresses) >= 2 :
-            router_interface["GigabitEthernet1/0"] = addresses[1]
+            router_interface[interfaces_dispos[1]] = addresses[1]
             
             if len(addresses) >= 3 :
-                router_interface["GigabitEthernet2/0"] = addresses[2]
+                router_interface[interfaces_dispos[2]] = addresses[2]
                 
                 if len(addresses) == 4 :
-                    router_interface["GigabitEthernet3/0"] = addresses[3]
+                    router_interface[interfaces_dispos[3]] = addresses[3]
                     
         interfaces[router] = router_interface
 
@@ -100,7 +100,7 @@ def border(border_dico):
         addresses = dic_temp[router]
         router_interface = {}
 
-        router_interface["GigabitEthernet3/0"] = addresses[0]
+        router_interface[interfaces_dispos[3]] = addresses[0]
                     
         inter[router] = router_interface
     
