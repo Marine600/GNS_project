@@ -20,6 +20,7 @@
         },
     "30":{
         "Protocol" : "OSPF",
+        "Process" : "1",
         "Relation": "Peer",
         "Routeurs" : ["R31", "R32", "R33"],
         "Liens" : [["R31","R32"],["R32","R33"],["R33","R31"]],             
@@ -28,6 +29,7 @@
         },
     "40":{
         "Protocol" : "RIP",
+        "Process" : "ng",
         "Relation": "Client",
         "Routeurs" : ["R41", "R42", "R43"],
         "Liens" : [["R41","R42"],["R42","R43"],["R43","R41"]],             
@@ -36,6 +38,7 @@
         },
     "50":{
         "Protocol" : "OSPF",
+        "Process" : "1",
         "Relation": "Client",
         "Routeurs" : ["R51", "R52", "R53"],
         "Liens" : [["R51","R52"],["R52","R53"],["R53","R51"]],             
@@ -44,6 +47,7 @@
         },
     "60":{
         "Protocol" : "OSPF",
+        "Process" : "1",
         "Relation": "Fournisseur",
         "Routeurs" : ["R61", "R62", "R63"],
         "Liens" : [["R61","R62"],["R62","R63"],["R63","R61"]],             
