@@ -3,7 +3,7 @@ import fonction_conf_address
 import drag_and_drop
 import policies
 
-def modif_config(lines, dico, dicoAS, routeur):
+def modif_config(lines, dico, AS_name, routeur):
 
     # Nom du fichier de configuration créé basé sur le nom du routeur
     filename = f"i{routeur[1]+routeur[2]}_startup-config.cfg"
@@ -13,11 +13,10 @@ def modif_config(lines, dico, dicoAS, routeur):
     routeur_id = number+"."+number+"."+number+"."+number
 
     # Détermination du nom de l'AS
-    as_name = routeur[1] + "0"
-
+    dicoAS = dico["AS"][AS_name]
 
     #Détermination du protocole
-    protocol = dico["AS"][as_name]["Protocol"]
+    protocol = dico["AS"][AS_name]["Protocol"]
 
     # Récupérer l'info sur si le routeur est en ebgp ou pas, à partir des données JSON
     ebgp = False
@@ -114,7 +113,7 @@ def modif_config(lines, dico, dicoAS, routeur):
             
 
         elif line.startswith("router bgp"):  # Modifier le router bgp
-            updated_lines.append(f" router bgp {as_name}\n")
+            updated_lines.append(f" router bgp {AS_name}\n")
 
 
         elif line.startswith(" bgp router-id"):  # Modifier le router-id
@@ -123,10 +122,10 @@ def modif_config(lines, dico, dicoAS, routeur):
 
         elif line.startswith(" no bgp default ipv4-unicast"):
             updated_lines.append(" no bgp default ipv4-unicast\n")
-            for voisin_bgp in dico["AS"][as_name]["Routeurs"]: # On parcourt tous les routeurs de l'AS
+            for voisin_bgp in dicoAS["Routeurs"]: # On parcourt tous les routeurs de l'AS
                 if voisin_bgp != routeur: # Attention un routeur n'est pas voisin de lui même
                     loop_voisin = dico_interfaces[voisin_bgp]['Loopback0']
-                    updated_lines.append(f" neighbor {loop_voisin[0:-4]} remote-as {as_name}\n")
+                    updated_lines.append(f" neighbor {loop_voisin[0:-4]} remote-as {AS_name}\n")
                     updated_lines.append(f" neighbor {loop_voisin[0:-4]} update-source Loopback0\n")
             if ebgp:
                 for lien in dico["Border"]["Liens_border"]: # On cherche le voisin ebgp de notre routeur
@@ -145,14 +144,14 @@ def modif_config(lines, dico, dicoAS, routeur):
                     updated_lines.append(f"  network {subnet}\n")
                 updated_lines.append(f"  neighbor {ad_voisin_ebgp[0:-3]} activate\n")
             
-            for voisin_bgp in dico["AS"][as_name]["Routeurs"]: # On active tous les voisins
+            for voisin_bgp in dicoAS["Routeurs"]: # On active tous les voisins
                 if voisin_bgp != routeur: # Attention un routeur n'est pas voisin de lui même
                     loop_voisin = dico_interfaces[voisin_bgp]['Loopback0']
                     updated_lines.append(f"  neighbor {loop_voisin[0:-4]} activate\n")
 
 
-        elif line.startswith("ipv6 router ospf 1"):
-            updated_lines.append(f"ipv6 router ospf 1\n router-id {routeur_id}\n ")
+        elif line.startswith(f"ipv6 router ospf {dicoAS["Process"]}"):
+            updated_lines.append(f"ipv6 router ospf {dicoAS["Process"]}\n router-id {routeur_id}\n ")
             if ebgp:
                 updated_lines.append("passive-interface GigabitEthernet3/0\n ")  
         
@@ -194,9 +193,9 @@ if __name__=="__main__":
         dico = json.load(json_file_1)
 
     # Parcourir chaque AS dans le fichier JSON principal
-    for dicoAS in dico["AS"].values():
+    for AS_name in dico["AS"].keys():
         # Lire le fichier modèle rip ou ospf en fonction de l'AS dans lequel se trouve le routeur
-        if dicoAS["Protocol"] == "RIP":
+        if dico["AS"][AS_name]["Protocol"] == "RIP":
             with open("model_RIP_startup-config.cfg", 'r') as file:
                 lines = file.readlines()  # Lire toutes les lignes du fichier
         else:
@@ -204,9 +203,8 @@ if __name__=="__main__":
                 lines = file.readlines() # lines = contenu du fichier modèle
 
         # Parcourir chaque routeur de l'AS
-        for routeur in dicoAS["Routeurs"]:
-            modif_config(lines, dico, dicoAS, routeur) #Modifie le fichier modèle d'un routeur avec les configurations de base.
-    
+        for routeur in dico["AS"][AS_name]["Routeurs"]:
+            modif_config(lines, dico, AS_name, routeur) #Modifie le fichier modèle d'un routeur avec les configurations de base.
 
     # Si le routeur est un routeur de bordure de notre AS, lui appliquer les modifications concernant les policies.
     # c-à-d si le routeur se trouve dans liens borders

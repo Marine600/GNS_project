@@ -32,8 +32,6 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
                 voisin_bgp = lien[1]
             if lien[1] == routeur :
                 voisin_bgp = lien[0]
-        #else : # Si le routeur n'est pas un routeur de bordure on n'applique pas tout le reste
-         #   return
     
     # On détermine si le routeur est connecté à un routeur d'un client, d'un provider ou d'un peer
     AS_voisin = voisin_bgp[1] + "0"
@@ -43,16 +41,6 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
         co_peer = True
     if AS_voisin in providers :
         co_provider = True
-
-    #for AS in dico["AS"].keys():
-        # On regarde quel est le lien entre l'AS qu'on configure et l'AS voisin
-        #if AS == AS_voisin : 
-         #   if AS in clients :
-          #      co_customer = True
-           # if AS in peers :
-            #    co_peer = True 
-            #if AS in providers :
-             #   co_provider = True 
 
     print(f"Routeur:{routeur}, co_fournisseur:{co_provider}, co_client:{co_customer}, co_peer:{co_peer}")
 
@@ -93,7 +81,7 @@ def modif_config_policies(lines, dico, nAS, routeur, filename):
                 updated_lines.append(f"route-map TAG_provider permit 10 \n set local-preference {loc_pref["provider"]} \n!\nroute-map TAG_provider permit 50\n!\n")
                 updated_lines.append(f"route-map filtre_client permit 10 \n match community com_client\n!\nroute-map filtre_client deny 50\n")
         
-        elif line.startswith(f"ipv6 router ospf {dico[nAS]["Process"]}"): 
+        elif line.startswith(f"ipv6 router ospf {dico["AS"][nAS]["Process"]}"): 
             updated_lines.append(line)
             if co_customer:
                 updated_lines.append(f"route-map TAG_client permit 10 \n set local-preference {loc_pref["customer"]} \n")
