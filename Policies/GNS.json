@@ -7,7 +7,7 @@
         "Routeurs" : ["R11", "R12", "R13", "R14", "R15"],
         "Liens" : [["R11","R12"],["R12","R13"],["R13","R14"],["R14","R15"],["R15","R11"]],             
         "Ip_range" : "2000:100:1::/48",
-        "AS_voisins" : {"customers" : ["40","60"], "peers" : ["20","30"], "providers" : ["60"]}
+        "AS_voisins" : {"customers" : ["40","50"], "peers" : ["20","30"], "providers" : ["60"]}
         },
     "20":{
         "Protocol" : "RIP",
