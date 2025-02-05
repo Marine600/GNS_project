@@ -23,7 +23,8 @@
         "Process" : "1",
         "Relation": "Peer",
         "Routeurs" : ["R31", "R32", "R33"],
-        "Liens" : [["R31","R32"],["R32","R33"],["R33","R31"]],             
+        "Liens" : [["R31","R32","1"],["R32","R33","1"],["R33","R31","1"]],
+        "Bandwidth" : "100",           
         "Ip_range" : "2000:100:3::/48",
         "AS_voisins" : {"customers" : [], "peers" : ["10"], "providers" : []}
         },
@@ -41,7 +42,8 @@
         "Process" : "1",
         "Relation": "Client",
         "Routeurs" : ["R51", "R52", "R53"],
-        "Liens" : [["R51","R52"],["R52","R53"],["R53","R51"]],             
+        "Liens" : [["R51","R52","1"],["R52","R53","1"],["R53","R51","1"]],
+        "Bandwidth" : "100",             
         "Ip_range" : "2000:100:5::/48",
         "AS_voisins" : {"customers" : [], "peers" : [], "providers" : ["10"]}
         },
@@ -50,7 +52,8 @@
         "Process" : "1",
         "Relation": "Fournisseur",
         "Routeurs" : ["R61", "R62", "R63"],
-        "Liens" : [["R61","R62"],["R62","R63"],["R63","R61"]],             
+        "Liens" : [["R61","R62","1"],["R62","R63","1"],["R63","R61","1"]],
+        "Bandwidth" : "100",             
         "Ip_range" : "2000:100:6::/48",
         "AS_voisins" : {"customers" : ["10"], "peers" : [], "providers" : []}
         }

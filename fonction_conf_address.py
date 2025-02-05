@@ -13,7 +13,10 @@ def addressage(AS):
     Returns
     -------
     dic : Dictionnaire
-        Dictionnaire des addresses ipv6 configurées pour chaque routeur
+        Dictionnaire des addresses ipv6 configurées pour chaque routeur :
+        clé = routeur
+        valeur = liste de listes [["adresse ip", "cout du lien ospf"]] si OSPF
+        valeur = liste des adresses ip si RIP
     subnet : Liste des subnets de l'AS
 
     '''
@@ -31,10 +34,8 @@ def addressage(AS):
 
             # Si OSPF est configuré dans l'AS on rajoute la métrique
             if AS["Protocol"] == "OSPF":
-                if len(AS["Liens"][i]) == 3 :
-                    dic[AS["Liens"][i][0]] = [[adresse,AS["Liens"][i][2]]]
-                else :
-                    dic[AS["Liens"][i][0]] = [adresse]
+                dic[AS["Liens"][i][0]] = [[adresse,AS["Liens"][i][2]]]
+
             else :
                 dic[AS["Liens"][i][0]] = [adresse]
 
@@ -42,10 +43,8 @@ def addressage(AS):
             adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"
 
             if AS["Protocol"] == "OSPF":
-                if len(AS["Liens"][i]) == 3 :
-                    dic[AS["Liens"][i][0]].append([adresse, AS["Liens"][i][2]])
-                else :
-                    dic[AS["Liens"][i][0]].append(adresse)
+                dic[AS["Liens"][i][0]].append([adresse, AS["Liens"][i][2]])
+
             else :
                 dic[AS["Liens"][i][0]].append(adresse) 
             
@@ -54,10 +53,8 @@ def addressage(AS):
             adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"
 
             if AS["Protocol"] == "OSPF":
-                if len(AS["Liens"][i]) == 3 :
-                    dic[AS["Liens"][i][1]] = [[adresse,AS["Liens"][i][2]]]
-                else :
-                    dic[AS["Liens"][i][1]] = [adresse]
+                dic[AS["Liens"][i][1]] = [[adresse,AS["Liens"][i][2]]]
+
             else :
                 dic[AS["Liens"][i][1]] = [adresse]
 
@@ -65,10 +62,8 @@ def addressage(AS):
             adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"
 
             if AS["Protocol"] == "OSPF":
-                if len(AS["Liens"][i]) == 3:
-                    dic[AS["Liens"][i][1]] = [adresse, AS["Liens"][i][2]]
-                else :
-                    dic[AS["Liens"][i][1]].append(adresse)
+                    dic[AS["Liens"][i][1]].append([adresse, AS["Liens"][i][2]])
+            
             else :
                 dic[AS["Liens"][i][1]].append(adresse)
         
@@ -87,6 +82,8 @@ def interface(AS):
     Returns
     -------
     interfaces : Dictionnaire avec comme clés les routeurs et comme valeurs un dictionnaire des noms des interfaces configurées et de leurs addresses ip respectives
+    clé = routeur
+    valeur = dictionnaire avec comme clé les interfaces configurées et comme valeur l'adresse ip correspondante (si RIP) ou une liste contenant l'adresse ip correspondante et le cout du lien OSPF
     subnets : Liste des subnets de l'AS
     '''
     routeurs, subnets = addressage(AS)
