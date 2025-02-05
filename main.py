@@ -237,7 +237,7 @@ if __name__=="__main__":
     # Parcourir chaque AS dans le fichier JSON
     for AS_name in intent["AS"].keys():
         # Lire le fichier modèle 
-        with open("model_OSPF_startup-config.cfg", 'r') as file:
+        with open("modele_startup-config.cfg", 'r') as file:
                 lines = file.readlines() # lines = contenu du fichier modèle
         # Parcourir chaque routeur de l'AS
         for routeur in intent["AS"][AS_name]["Routeurs"]:
