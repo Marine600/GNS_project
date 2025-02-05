@@ -3,6 +3,29 @@ import fonction_conf_address
 import drag_and_drop
 import policies
 
+# Dictionnaire des correspondances entre les routeurs et leurs dossiers et fichiers GNS associes
+# Ajouter les noms des dossiers quand on aura mis les routeurs sur GNS
+dico_corresp = {"R11" : ["", "i1"],
+    "R12" : ["", "i2"],
+    "R13" : ["", "i3"],
+    "R14" : ["", "i4"],
+    "R15" : ["", "i5"],
+    "R21" : ["", "i6"],
+    "R22" : ["", "i7"],
+    "R23" : ["", "i8"],
+    "R31" : ["", "i9"],
+    "R32" : ["", "i10"],
+    "R33" : ["", "i11"],
+    "R41" : ["", "i12"],
+    "R42" : ["", "i13"],
+    "R43" : ["", "i14"],
+    "R51" : ["", "i15"],
+    "R52" : ["", "i10"],
+    "R53" : ["", "i11"],
+    "R61" : ["", "i12"],
+    "R62" : ["", "i13"],
+    "R63" : ["", "i14"]}
+
 def modif_config(lines, dico, AS_name, routeur):
 
     # Nom du fichier de configuration créé basé sur le nom du routeur
@@ -214,23 +237,6 @@ def modif_config(lines, dico, AS_name, routeur):
 
 
 if __name__=="__main__": 
-    # Dictionnaire des correspondances entre les routeurs et leurs dossiers et fichiers GNS associes
-    # Ajouter les noms des dossiers quand on aura mis les routeurs sur GNS
-    dico_corresp = {"R11" : ["", "i1"],
-        "R12" : ["", "i2"],
-        "R13" : ["", "i3"],
-        "R14" : ["", "i4"],
-        "R15" : ["", "i5"],
-        "R16" : ["", "i6"],
-        "R17" : ["", "i7"],
-        "R21" : ["", "i8"],
-        "R22" : ["", "i9"],
-        "R23" : ["", "i10"],
-        "R24" : ["", "i11"],
-        "R25" : ["", "i12"],
-        "R26" : ["", "i13"],
-        "R27" : ["", "i14"]}
-
     # Charger le fichier JSON
     with open ("GNS.json", 'r') as json_file:
         dico = json.load(json_file)

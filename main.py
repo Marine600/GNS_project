@@ -1,6 +1,22 @@
 import json
 import fonction_conf_address
 import drag_and_drop
+# Dictionnaire des correspondances entre les routeurs et leurs dossiers et fichiers GNS associes
+# Ajouter les noms des dossiers quand on aura mis les routeurs sur GNS
+dico_corresp = {"R11" : [" ", "i1"],
+    "R12" : [" ", "i2"],
+    "R13" : [" ", "i3"],
+    "R14" : [" ", "i4"],
+    "R15" : [" ", "i5"],
+    "R16" : [" ", "i6"],
+    "R17" : [" ", "i7"],
+    "R21" : [" ", "i8"],
+    "R22" : [" ", "i9"],
+    "R23" : [" ", "i10"],
+    "R24" : [" ", "i11"],
+    "R25" : [" ", "i12"],
+    "R26" : [" ", "i13"],
+    "R27" : [" ", "i14"]}
 
 def modif_config(lines, dico, AS_name, routeur):
 
@@ -214,34 +230,17 @@ def modif_config(lines, dico, AS_name, routeur):
 
 
 if __name__=="__main__": 
-    # Dictionnaire des correspondances entre les routeurs et leurs dossiers et fichiers GNS associes
-    # Ajouter les noms des dossiers quand on aura mis les routeurs sur GNS
-    dico_corresp = {"R11" : [" ", "i1"],
-        "R12" : [" ", "i2"],
-        "R13" : [" ", "i3"],
-        "R14" : [" ", "i4"],
-        "R15" : [" ", "i5"],
-        "R16" : [" ", "i6"],
-        "R17" : [" ", "i7"],
-        "R21" : [" ", "i8"],
-        "R22" : [" ", "i9"],
-        "R23" : [" ", "i10"],
-        "R24" : [" ", "i11"],
-        "R25" : [" ", "i12"],
-        "R26" : [" ", "i13"],
-        "R27" : [" ", "i14"]}
-
     # Charger le fichier JSON
     with open ("GNS.json", 'r') as json_file:
-        dico = json.load(json_file)
+        intent = json.load(json_file)
 
     # Parcourir chaque AS dans le fichier JSON
-    for AS_name in dico["AS"].keys():
+    for AS_name in intent["AS"].keys():
         # Lire le fichier modèle 
         with open("model_OSPF_startup-config.cfg", 'r') as file:
                 lines = file.readlines() # lines = contenu du fichier modèle
         # Parcourir chaque routeur de l'AS
-        for routeur in dico["AS"][AS_name]["Routeurs"]:
-            modif_config(lines, dico, AS_name, routeur) #Modifie le fichier modèle d'un routeur
+        for routeur in intent["AS"][AS_name]["Routeurs"]:
+            modif_config(lines, intent, AS_name, routeur) #Modifie le fichier modèle d'un routeur
 
     #drag_and_drop(dico_corresp)
