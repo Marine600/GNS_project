@@ -20,17 +20,57 @@ def addressage(AS):
     dic = {}
     subnet = []
     
+    # On parcourt les liens de l'AS
     for i in range(len(AS["Liens"])):
         
+        # On rajoute chaque routeur dans le dictionnaire dic
         if AS["Liens"][i][0] not in dic.keys():
-            dic[AS["Liens"][i][0]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"]
+
+            # On configure l'addresse ipv6 du routeur à partir du l'ip range de l'AS
+            adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"
+
+            # Si OSPF est configuré dans l'AS on rajoute la métrique
+            if AS["Protocol"] == "OSPF":
+                if len(AS["Liens"][i]) == 3 :
+                    dic[AS["Liens"][i][0]] = [[adresse,AS["Liens"][i][2]]]
+                else :
+                    dic[AS["Liens"][i][0]] = [adresse]
+            else :
+                dic[AS["Liens"][i][0]] = [adresse]
+
         else:
-            dic[AS["Liens"][i][0]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64")
+            adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][0][1:3] + "/64"
+
+            if AS["Protocol"] == "OSPF":
+                if len(AS["Liens"][i]) == 3 :
+                    dic[AS["Liens"][i][0]].append([adresse, AS["Liens"][i][2]])
+                else :
+                    dic[AS["Liens"][i][0]].append(adresse)
+            else :
+                dic[AS["Liens"][i][0]].append(adresse) 
+            
             
         if AS["Liens"][i][1] not in dic.keys():
-            dic[AS["Liens"][i][1]] = [AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"]
+            adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"
+
+            if AS["Protocol"] == "OSPF":
+                if len(AS["Liens"][i]) == 3 :
+                    dic[AS["Liens"][i][1]] = [[adresse,AS["Liens"][i][2]]]
+                else :
+                    dic[AS["Liens"][i][1]] = [adresse]
+            else :
+                dic[AS["Liens"][i][1]] = [adresse]
+
         else:
-            dic[AS["Liens"][i][1]].append(AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64")
+            adresse = AS["Ip_range"][0:11] + f"{i+1}::" + AS["Liens"][i][1][1:3] + "/64"
+
+            if AS["Protocol"] == "OSPF":
+                if len(AS["Liens"][i]) == 3:
+                    dic[AS["Liens"][i][1]] = [adresse, AS["Liens"][i][2]]
+                else :
+                    dic[AS["Liens"][i][1]].append(adresse)
+            else :
+                dic[AS["Liens"][i][1]].append(adresse)
         
         subnet.append(AS["Ip_range"][0:11] + f"{i+1}::" + "/64")
         
@@ -56,17 +96,31 @@ def interface(AS):
         addresses = routeurs[router]
         router_interface = {}
         
-        router_interface["Loopback0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/128"
-        router_interface[interfaces_dispos[0]] = addresses[0]
-        
-        if len(addresses) >= 2 :
-            router_interface[interfaces_dispos[1]] = addresses[1]
+        if AS["Protocol"] == "OSPF" :
+            router_interface["Loopback0"] = [(addresses[0][0])[0:9] + f"{router[1:3]}::{router[1:3]}/128", addresses[0][1]]
+            router_interface[interfaces_dispos[0]] = [addresses[0][0],addresses[0][1]]
             
-            if len(addresses) >= 3 :
-                router_interface[interfaces_dispos[2]] = addresses[2]
+            if len(addresses) >= 2 :
+                router_interface[interfaces_dispos[1]] = [addresses[1][0],addresses[1][1]]
                 
-                if len(addresses) == 4 :
-                    router_interface[interfaces_dispos[3]] = addresses[3]
+                if len(addresses) >= 3 :
+                    router_interface[interfaces_dispos[2]] = [addresses[2][0],addresses[2][1]]
+                    
+                    if len(addresses) == 4 :
+                        router_interface[interfaces_dispos[3]] = [addresses[3][0],addresses[3][1]]
+
+        else :
+            router_interface["Loopback0"] = addresses[0][0:9] + f"{router[1:3]}::{router[1:3]}/128"
+            router_interface[interfaces_dispos[0]] = addresses[0]
+            
+            if len(addresses) >= 2 :
+                router_interface[interfaces_dispos[1]] = addresses[1]
+                
+                if len(addresses) >= 3 :
+                    router_interface[interfaces_dispos[2]] = addresses[2]
+                    
+                    if len(addresses) == 4 :
+                        router_interface[interfaces_dispos[3]] = addresses[3]
                     
         interfaces[router] = router_interface
 
@@ -105,8 +159,3 @@ def border(border_dico):
         inter[router] = router_interface
     
     return inter
-
-
-
-
-    
