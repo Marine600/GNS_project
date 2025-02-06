@@ -243,4 +243,4 @@ if __name__=="__main__":
         for routeur in intent["AS"][AS_name]["Routeurs"]:
             modif_config(lines, intent, AS_name, routeur) #Modifie le fichier modèle d'un routeur
 
-    #drag_and_drop(dico_corresp)
+    drag_and_drop(dico_corresp)

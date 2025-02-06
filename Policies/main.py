@@ -261,4 +261,4 @@ if __name__=="__main__":
                     lines = file.readlines()  # Lire toutes les lignes du fichier
                     policies.modif_config_policies(lines, dico, AS_name, routeur, filename)
 
-    # drag_and_drop.drag_and_drop(dico_corresp)
+    drag_and_drop.drag_and_drop(dico_corresp)
